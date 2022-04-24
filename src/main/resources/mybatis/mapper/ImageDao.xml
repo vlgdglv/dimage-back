@@ -5,5 +5,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bht.dimage.dao.ImageDao">
-
+    <insert id="insertImage" parameterType="com.bht.dimage.entity.Image">
+        insert into `tb_image` (image_id,author,owner,ipfs_hash,sha3,signature,title,thumbnailPath,create_time)
+        values (#{imageID},#{author},#{owner},#{ipfsHash},#{sha3},#{signature},#{title},#{thumbnailPath},#{releaseTime})
+    </insert>
 </mapper>

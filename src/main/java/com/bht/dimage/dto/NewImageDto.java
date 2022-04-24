@@ -1,11 +1,21 @@
 package com.bht.dimage.dto;
 
 public class NewImageDto {
+    private long imgID;
     private String author;
     private String hash;
     private String sha3;
     private String signature;
     private String title;
+    private String thumbnailPath;
+
+    public long getImgID() {
+        return imgID;
+    }
+
+    public void setImgID(long imgID) {
+        this.imgID = imgID;
+    }
 
     public String getAuthor() {
         return author;
@@ -45,5 +55,13 @@ public class NewImageDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 }

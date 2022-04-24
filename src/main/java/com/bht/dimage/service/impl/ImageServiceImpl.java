@@ -6,6 +6,7 @@ import com.bht.dimage.service.ImageService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Date;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -15,7 +16,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public int createImage(Image image) {
-//        return imageDao.insertImage(image);
-        return 0;
+        image.setReleaseTime(new Date(System.currentTimeMillis()));
+        return imageDao.insertImage(image);
     }
 }
