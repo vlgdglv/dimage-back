@@ -15,7 +15,7 @@ public class Image {
     private String owner;
     @ApiModelProperty(value = "IPFS地址", required = true)
     private String ipfsHash;
-    @ApiModelProperty(value = "数字摘要keccak256", required = true)
+    @ApiModelProperty(value = "图片SHA3(keccak256)", required = true)
     private String sha3;
     @ApiModelProperty(value = "数字签名", required = true)
     private String signature;
@@ -23,8 +23,10 @@ public class Image {
     private String title;
     @ApiModelProperty(value = "缩略图地址", required = true)
     private String thumbnailPath;
-    @ApiModelProperty(value = "发布时间", required = true)
+    @ApiModelProperty(value = "发布时间", required = false)
     private Date releaseTime;
+    @ApiModelProperty(value = "持续时间", required = true)
+
 
     public long getImageID() {
         return imageID;
@@ -52,13 +54,9 @@ public class Image {
         this.ipfsHash = ipfsHash;
     }
 
-    public String getSha3() {
-        return sha3;
-    }
+    public String getSha3() { return sha3; }
 
-    public void setSha3(String sha3) {
-        this.sha3 = sha3;
-    }
+    public void setSha3(String sha3) { this.sha3 = sha3; }
 
     public String getSignature() {
         return signature;
@@ -91,4 +89,5 @@ public class Image {
     public void setReleaseTime(Date releaseTime) {
         this.releaseTime = releaseTime;
     }
+
 }

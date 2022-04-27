@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bht.dimage.dao.PurchaseDao">
+    <insert id="insertPurchase" parameterType="com.bht.dimage.entity.PurchaseTransaction">
+        insert into `tb_purchase` (
+            contract_address,purchaser,image_owner, image_author,
+            image_id, offer, launch_time, duration, isClosed, state)
+        values (
+            #{contractAddress}, #{purchaser}, #{imageOwner}, #{imageAuthor},
+            #{imageID}, #{offer}, #{launchTime}, #{duration},#{isClosed},#{state})
+    </insert>
+    <select id="selectByPurchaserAndImage" resultType="com.bht.dimage.entity.PurchaseTransaction">
+        select * from `tb_purchase`
+        where #{purchaser}=purchaser and #{imageID} = image_id
+    </select>
+</mapper>

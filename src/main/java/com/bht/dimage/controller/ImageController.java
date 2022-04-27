@@ -28,35 +28,35 @@ public class ImageController {
     public RestResult<String> newImage(@RequestBody NewImageDto newImageDto){
         Image image = new Image();
         //check parameters
-        if (newImageDto.getImgID() < 0) { return RestResult.Fail().message("Invalid id!"); }
-        else{ image.setImageID(newImageDto.getImgID()); }
+        long imageID = newImageDto.getImageID();
+        if ( imageID < 0) { return RestResult.Fail().message("Invalid id!"); }
+        String author = newImageDto.getAuthor();
+        if ( author == null || author.equals("")) { return RestResult.Fail().message("No author!"); }
+        String ipfsHash = newImageDto.getHash();
+        if ( ipfsHash == null || ipfsHash.equals("")) { return RestResult.Fail().message("No ipfs hash!"); }
+        String sha3 = newImageDto.getSha3();
+        if ( sha3 == null || sha3.equals("")) { return RestResult.Fail().message("No sha3!"); }
+        String signature = newImageDto.getSignature();
+        if ( signature == null || signature.equals("")) { return RestResult.Fail().message("No signature!"); }
+        String title = newImageDto.getTitle();
+        if ( title == null || title.equals("")) { return RestResult.Fail().message("No title!"); }
+        String thumbnailPath = newImageDto.getThumbnailPath();
+        if ( thumbnailPath == null || thumbnailPath.equals("")) { return RestResult.Fail().message("No thumbnail path!"); }
+        //pack up image entity
+        image.setImageID(imageID);
+        image.setAuthor(author);
+        image.setOwner(author);
+        image.setIpfsHash(ipfsHash);
+        image.setSha3(sha3);
+        image.setSignature(signature);
+        image.setTitle(title);
+        image.setThumbnailPath(thumbnailPath);
 
-
-        if (newImageDto.getAuthor().equals("")) { return RestResult.Fail().message("No author!"); }
-        else{
-            image.setAuthor(newImageDto.getAuthor());
-            image.setOwner(newImageDto.getAuthor());
-        }
-
-        if (newImageDto.getHash().equals("")) { return RestResult.Fail().message("No ipfs hash!"); }
-        else{ image.setIpfsHash(newImageDto.getHash()); }
-
-        if (newImageDto.getSha3().equals("")) { return RestResult.Fail().message("No sha3!"); }
-        else{ image.setSha3(newImageDto.getSha3()); }
-
-        if (newImageDto.getSignature().equals("")) { return RestResult.Fail().message("No signature!"); }
-        else{ image.setSignature(newImageDto.getSignature()); }
-
-        if (newImageDto.getTitle().equals("")) { return RestResult.Fail().message("No title!"); }
-        else{ image.setTitle(newImageDto.getTitle()); }
-
-        if (newImageDto.getThumbnailPath().equals("")) { return RestResult.Fail().message("No thumbnail path!"); }
-        else{ image.setThumbnailPath(newImageDto.getThumbnailPath()); }
-
-        if (imageService.createImage(image) == 1){
+        RestResult<String> createResult = imageService.createImage(image);
+        if (createResult.isSuccess()){
             return RestResult.Success().message("create successfully");
         }else{
-            return RestResult.Fail().message("Service not available");
+            return createResult;
         }
     }
 }

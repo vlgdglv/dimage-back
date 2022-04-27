@@ -6,7 +6,17 @@
 
 <mapper namespace="com.bht.dimage.dao.ImageDao">
     <insert id="insertImage" parameterType="com.bht.dimage.entity.Image">
-        insert into `tb_image` (image_id,author,owner,ipfs_hash,sha3,signature,title,thumbnailPath,create_time)
-        values (#{imageID},#{author},#{owner},#{ipfsHash},#{sha3},#{signature},#{title},#{thumbnailPath},#{releaseTime})
+        insert into `tb_image` (
+            image_id,author,owner,
+            ipfs_hash,sha3,signature,
+            title,thumbnailPath,create_time)
+        values (
+            #{imageID},#{author},#{owner},
+            #{ipfsHash},#{sha3},#{signature},#
+            {title},#{thumbnailPath},#{releaseTime})
     </insert>
+    <select id="countImageBySHA3" parameterType="java.lang.String" resultType="com.bht.dimage.entity.Image">
+        select * from `tb_image`
+        where #{sha3}=sha3
+    </select>
 </mapper>

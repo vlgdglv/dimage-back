@@ -1,7 +1,7 @@
 package com.bht.dimage.dto;
 
 public class NewImageDto {
-    private long imgID;
+    private long imageID;
     private String author;
     private String hash;
     private String sha3;
@@ -9,12 +9,12 @@ public class NewImageDto {
     private String title;
     private String thumbnailPath;
 
-    public long getImgID() {
-        return imgID;
+    public long getImageID() {
+        return imageID;
     }
 
-    public void setImgID(long imgID) {
-        this.imgID = imgID;
+    public void setImageID(long imgID) {
+        this.imageID = imgID;
     }
 
     public String getAuthor() {
