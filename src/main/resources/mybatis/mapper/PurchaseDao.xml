@@ -5,16 +5,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bht.dimage.dao.PurchaseDao">
+    <resultMap id="ptxMapper" type="com.bht.dimage.entity.PurchaseTransaction">
+        <result property="contractAddress" column="contract_address"/>
+        <result property="purchaser" column="purchaser"/>
+        <result property="imageOwner" column="image_owner"/>
+        <result property="imageAuthor" column="image_author"/>
+        <result property="imageID" column="image_id"/>
+        <result property="offer" column="offer"/>
+        <result property="launchTime" column="launch_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="isClosed" column="isClosed"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
     <insert id="insertPurchase" parameterType="com.bht.dimage.entity.PurchaseTransaction">
         insert into `tb_purchase` (
             contract_address,purchaser,image_owner, image_author,
-            image_id, offer, launch_time, duration, isClosed, state)
+            image_id, offer, launch_time, end_time, isClosed, state)
         values (
             #{contractAddress}, #{purchaser}, #{imageOwner}, #{imageAuthor},
-            #{imageID}, #{offer}, #{launchTime}, #{duration},#{isClosed},#{state})
+            #{imageID}, #{offer}, #{launchTime}, #{endTime},#{isClosed},#{state})
     </insert>
-    <select id="selectByPurchaserAndImage" resultType="com.bht.dimage.entity.PurchaseTransaction">
+    <select id="selectByPurchaserAndImage" resultMap="ptxMapper">
         select * from `tb_purchase`
         where #{purchaser}=purchaser and #{imageID} = image_id
+    </select>
+    <select id="selectByContractAddress" resultMap="ptxMapper">
+        select * from `tb_purchase`
+        where #{address}=contract_address
+    </select>
+    <select id="selectByPurchaser" resultMap="ptxMapper">
+        select * from `tb_purchase`
+        where #{purchaser}=purchaser
+    </select>
+    <select id="selectByImageOwner" resultMap="ptxMapper">
+        select * from `tb_purchase`
+        where #{imageOwner}=image_owner
     </select>
 </mapper>

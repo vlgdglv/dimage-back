@@ -1,5 +1,6 @@
 package com.bht.dimage.dto;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 public class NewPurchaseDto {
@@ -8,7 +9,7 @@ public class NewPurchaseDto {
     private String imageOwner;
     private String imageAuthor;
     private long imageID;
-    private long offer;
+    private String offer;
     private long launchTime;
     private long duration;
 
@@ -52,11 +53,11 @@ public class NewPurchaseDto {
         this.imageID = imageID;
     }
 
-    public long getOffer() {
+    public String getOffer() {
         return offer;
     }
 
-    public void setOffer(long offer) {
+    public void setOffer(String offer) {
         this.offer = offer;
     }
 

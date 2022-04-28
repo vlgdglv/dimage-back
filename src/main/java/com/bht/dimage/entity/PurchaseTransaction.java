@@ -2,24 +2,25 @@ package com.bht.dimage.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 public class PurchaseTransaction {
     @ApiModelProperty(value = "交易合约地址", required = true)
     private String contractAddress;
-    @ApiModelProperty(value = "结束时间", required = true)
+    @ApiModelProperty(value = "购买者", required = true)
     private String purchaser;
-    @ApiModelProperty(value = "结束时间", required = true)
+    @ApiModelProperty(value = "拥有者", required = true)
     private String imageOwner;
-    @ApiModelProperty(value = "结束时间", required = true)
+    @ApiModelProperty(value = "作者", required = true)
     private String imageAuthor;
-    @ApiModelProperty(value = "结束时间", required = true)
+    @ApiModelProperty(value = "图片ID", required = true)
     private long imageID;
-    @ApiModelProperty(value = "结束时间", required = true)
-    private double offer;
-    @ApiModelProperty(value = "结束时间", required = true)
+    @ApiModelProperty(value = "出价", required = true)
+    private String offer;
+    @ApiModelProperty(value = "发起时间", required = true)
     private long launchTime;
-    @ApiModelProperty(value = "结束时间", required = true)
+    @ApiModelProperty(value = "持续时间", required = true)
     private long duration;
     @ApiModelProperty(value = "结束时间", required = false)
     private long endTime;
@@ -71,11 +72,11 @@ public class PurchaseTransaction {
 
     public void setImageID(long imageID) { this.imageID = imageID; }
 
-    public double getOffer() {
+    public String getOffer() {
         return offer;
     }
 
-    public void setOffer(double offer) {
+    public void setOffer(String offer) {
         this.offer = offer;
     }
 
