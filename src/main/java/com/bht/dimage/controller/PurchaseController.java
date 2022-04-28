@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 
 @Api(tags = "交易接口")
 @RestController
@@ -21,7 +22,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "新增交易", notes = "发起交易，保存交易信息")
     @ResponseBody
-    @PostMapping(value = "/newPurchase")
+    @PostMapping(value = "/newpurchase")
     public RestResult newPurchase(@RequestBody NewPurchaseDto newPurchaseDto) {
         PurchaseTransaction ptx = new PurchaseTransaction();
         //check parameters
@@ -42,13 +43,16 @@ public class PurchaseController {
         long duration = newPurchaseDto.getDuration();
         if (duration < 0 ) { return RestResult.Fail().message("invalid duration!");}
 
+        long endTime = launchTime + duration;
+
         ptx.setContractAddress(contractAddress);
         ptx.setPurchaser(purchaser);
         ptx.setImageOwner(imageOwner);
         ptx.setImageAuthor(imageAuthor);
         ptx.setImageID(imageID);
         ptx.setOffer(offer);
-        ptx.setLaunchTime(launchTime);
+        ptx.setLaunchTime(new Timestamp(launchTime*1000));
+        ptx.setEndTime(new Timestamp(endTime*1000));
         ptx.setDuration(duration);
 
         return purchaseService.createPurchase(ptx);
@@ -66,7 +70,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
     @ResponseBody
-    @GetMapping(value = "/getTxByOwner")
+    @GetMapping(value = "/getownertx")
     public RestResult getTxByOwner(@RequestParam String owner) {
         if (owner == null || owner.equals("")) {
             return RestResult.Fail().message("Invalid Purchaser Address!");

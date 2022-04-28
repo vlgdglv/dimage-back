@@ -3,6 +3,7 @@ package com.bht.dimage.entity;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class PurchaseTransaction {
@@ -19,11 +20,11 @@ public class PurchaseTransaction {
     @ApiModelProperty(value = "出价", required = true)
     private String offer;
     @ApiModelProperty(value = "发起时间", required = true)
-    private long launchTime;
+    private Timestamp launchTime;
     @ApiModelProperty(value = "持续时间", required = true)
     private long duration;
     @ApiModelProperty(value = "结束时间", required = false)
-    private long endTime;
+    private Timestamp endTime;
     @ApiModelProperty(value = "是否超过截止时间", required = false)
     private int isClosed;
     /*
@@ -80,11 +81,11 @@ public class PurchaseTransaction {
         this.offer = offer;
     }
 
-    public long getLaunchTime() {
+    public Timestamp getLaunchTime() {
         return launchTime;
     }
 
-    public void setLaunchTime(long launchTime) {
+    public void setLaunchTime(Timestamp launchTime) {
         this.launchTime = launchTime;
     }
 
@@ -96,9 +97,9 @@ public class PurchaseTransaction {
         this.duration = duration;
     }
 
-    public long getEndTime() { return endTime; }
+    public Timestamp getEndTime() { return endTime; }
 
-    public void setEndTime(long endTime) { this.endTime = endTime; }
+    public void setEndTime(Timestamp endTime) { this.endTime = endTime; }
 
     public int getIsClosed() { return isClosed; }
 

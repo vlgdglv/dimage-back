@@ -1,6 +1,7 @@
 package com.bht.dimage.dto;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class NewPurchaseDto {

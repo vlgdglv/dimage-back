@@ -7,11 +7,13 @@ import com.bht.dimage.service.PurchaseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Date;
 
 //Test classes
 import com.bht.dimage.util.FileUtil;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.List;
 
 @SpringBootTest
@@ -41,7 +43,8 @@ class DimageApplicationTests {
 		ptx.setImageAuthor("author");
 		ptx.setImageID(1);
 		ptx.setOffer("100000000000000");
-		ptx.setLaunchTime(System.currentTimeMillis());
+		ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+		ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
 		ptx.setDuration(360);
 		rest = purchaseService.createPurchase(ptx);
 		System.out.println("insert #1:" + rest.getMessage());
@@ -52,7 +55,8 @@ class DimageApplicationTests {
 		ptx.setImageAuthor("author6902");
 		ptx.setImageID(4);
 		ptx.setOffer("10000000000000088888");
-		ptx.setLaunchTime(System.currentTimeMillis());
+		ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+		ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
 		ptx.setDuration(1000);
 		rest  = purchaseService.createPurchase(ptx);
 		System.out.println("insert #2:" + rest.getMessage());
@@ -63,7 +67,8 @@ class DimageApplicationTests {
 		ptx.setImageAuthor("author");
 		ptx.setImageID(84);
 		ptx.setOffer("100000000000000");
-		ptx.setLaunchTime(System.currentTimeMillis());
+		ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+		ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
 		ptx.setDuration(360);
 		rest  = purchaseService.createPurchase(ptx);
 		System.out.println("insert #3:" + rest.getMessage());
@@ -74,7 +79,8 @@ class DimageApplicationTests {
 		ptx.setImageAuthor("author6902");
 		ptx.setImageID(56);
 		ptx.setOffer("100000000000000");
-		ptx.setLaunchTime(System.currentTimeMillis());
+		ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+		ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
 		ptx.setDuration(360);
 		rest  = purchaseService.createPurchase(ptx);
 		System.out.println("insert #4:" + rest.getMessage());
@@ -85,7 +91,8 @@ class DimageApplicationTests {
 		ptx.setImageAuthor("author");
 		ptx.setImageID(1);
 		ptx.setOffer("8888888000000000");
-		ptx.setLaunchTime(System.currentTimeMillis());
+		ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+		ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
 		ptx.setDuration(12960);
 		rest  = purchaseService.createPurchase(ptx);
 		System.out.println("insert #5:" + rest.getMessage());
@@ -96,7 +103,8 @@ class DimageApplicationTests {
 		ptx.setImageAuthor("author");
 		ptx.setImageID(1);
 		ptx.setOffer("8888888000000000");
-		ptx.setLaunchTime(System.currentTimeMillis());
+		ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+		ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
 		ptx.setDuration(12960);
 		rest  = purchaseService.createPurchase(ptx);
 		System.out.println("insert #6:" + rest.getMessage());

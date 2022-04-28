@@ -7,6 +7,7 @@ import com.bht.dimage.service.PurchaseService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -26,8 +27,6 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (ptxList.size() != 0 ) {
             return RestResult.Fail().message("This contract already exits!");
         }
-        long endTime = ptx.getLaunchTime() + ptx.getDuration();
-        ptx.setEndTime(endTime);
         ptx.setIsClosed(0);
         ptx.setState(1);
         if (purchaseDao.insertPurchase(ptx) == 1) {
