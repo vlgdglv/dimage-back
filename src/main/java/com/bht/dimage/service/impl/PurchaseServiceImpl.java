@@ -2,12 +2,15 @@ package com.bht.dimage.service.impl;
 
 import com.bht.dimage.common.RestResult;
 import com.bht.dimage.dao.PurchaseDao;
+import com.bht.dimage.dto.UpdatePurchaseDto;
 import com.bht.dimage.entity.PurchaseTransaction;
 import com.bht.dimage.service.PurchaseService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,12 +48,71 @@ public class PurchaseServiceImpl implements PurchaseService {
         return RestResult.Success().data(ptxList);
     }
 
+
     @Override
     public RestResult fetchTxByOwner(String owner) {
         List<PurchaseTransaction> ptxList = purchaseDao.selectByImageOwner(owner);
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        List<PurchaseTransaction> NeedUpdate = new ArrayList<PurchaseTransaction>();
+        for(PurchaseTransaction ptx: ptxList) {
+            if (now.after(ptx.getEndTime())) {
+                ptx.setIsClosed(1);
+                NeedUpdate.add(ptx);
+            }
+        }
+        if (NeedUpdate.size() != 0) {
+
+        }
+
         if (ptxList == null) {
             return RestResult.Fail().message("database error!");
         }
         return RestResult.Success().data(ptxList);
+    }
+
+    @Override
+    public RestResult updateTx(UpdatePurchaseDto updatePurchaseDto) {
+        List<PurchaseTransaction> pl = purchaseDao.selectByContractAddress(updatePurchaseDto.getContractAddress());
+        if (pl.size() == 0) {
+            return RestResult.Fail().message("Contract not found");
+        }
+        PurchaseTransaction ptx = pl.get(0);
+        String from = updatePurchaseDto.getFrom();
+        int newState = updatePurchaseDto.getNewState();
+        int oldStateOrigin = ptx.getState();
+        int oldStateProvided = updatePurchaseDto.getOldState();
+        if (oldStateProvided != oldStateOrigin) {
+            return RestResult.Fail().message("Given state is incorrect");
+        }
+        if (oldStateProvided <= 0) {
+            return RestResult.Fail().message("This transaction is dead");
+        }
+
+        if (newState == -3) {
+            ptx.setIsClosed(1);
+        }
+        if (oldStateOrigin==1) {
+            if (newState == 2 && !from.equals(ptx.getImageOwner())) {
+                return RestResult.Fail().message("No permission");
+            }
+            if (newState == -1 && !from.equals(ptx.getImageOwner())) {
+                return RestResult.Fail().message("No permission");
+            }
+            if (newState == -2 && !from.equals(ptx.getPurchaser())) {
+                return RestResult.Fail().message("No permission");
+            }
+        }
+        if (oldStateOrigin==2 && newState==0){
+            if (!from.equals(ptx.getPurchaser())){
+                return RestResult.Fail().message("No permission");
+            }
+        }
+        ptx.setState(newState);
+
+        if (purchaseDao.insertPurchase(ptx) == 1) {
+            return RestResult.Success().message("State updated");
+        }else{
+            return RestResult.Fail().message("Databases error!");
+        }
     }
 }

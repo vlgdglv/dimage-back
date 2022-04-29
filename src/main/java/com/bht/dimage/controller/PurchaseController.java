@@ -3,6 +3,7 @@ package com.bht.dimage.controller;
 
 import com.bht.dimage.common.RestResult;
 import com.bht.dimage.dto.NewPurchaseDto;
+import com.bht.dimage.dto.UpdatePurchaseDto;
 import com.bht.dimage.entity.PurchaseTransaction;
 import com.bht.dimage.service.PurchaseService;
 import io.swagger.annotations.Api;
@@ -60,7 +61,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "获取交易详情", notes = "根据购买者获取交易")
     @ResponseBody
-    @GetMapping(value = "/getTxByPurchaser")
+    @GetMapping(value = "/getpurchasertx")
     public RestResult getTxByPurchaser(@RequestParam String purchaser) {
         if (purchaser == null || purchaser.equals("")) {
             return RestResult.Fail().message("Invalid Purchaser Address!");
@@ -78,6 +79,20 @@ public class PurchaseController {
         return purchaseService.fetchTxByOwner(owner);
     }
 
+    @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
+    @ResponseBody
+    @PostMapping(value = "/updatetx")
+    public RestResult updateTx(@RequestBody UpdatePurchaseDto updatePurchaseDto) {
+        String contractAddress = updatePurchaseDto.getContractAddress();
+        if (contractAddress == null || contractAddress.equals("")){ return RestResult.Fail().message("No Purchase contract address!"); }
+        String from = updatePurchaseDto.getFrom();
+        if (from == null || from.equals("")){ return RestResult.Fail().message("No user address"); }
+        int oldState = updatePurchaseDto.getOldState();
+        int newState = updatePurchaseDto.getNewState();
+        if( newState == oldState ) { return RestResult.Fail().message("No state change"); }
 
+        purchaseService.updateTx(updatePurchaseDto);
 
+        return RestResult.Fail();
+    }
 }

@@ -6,6 +6,7 @@
 
 <mapper namespace="com.bht.dimage.dao.PurchaseDao">
     <resultMap id="ptxMapper" type="com.bht.dimage.entity.PurchaseTransaction">
+        <result property="txID" column="tx_id"/>
         <result property="contractAddress" column="contract_address"/>
         <result property="purchaser" column="purchaser"/>
         <result property="imageOwner" column="image_owner"/>
@@ -42,4 +43,12 @@
         select * from `tb_purchase`
         where #{imageOwner}=image_owner
     </select>
+    <update id="updateByTxID"  parameterType="com.bht.dimage.entity.PurchaseTransaction">
+        update `tb_purchase`
+        <set>
+            <if test="isClosed != null"> isClosed = #{isClosed}</if>
+            <if test="state != null">state = #{state}</if>
+        </set>
+        where tx_id = #{txID}
+    </update>
 </mapper>

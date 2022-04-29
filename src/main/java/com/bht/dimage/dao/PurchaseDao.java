@@ -10,4 +10,5 @@ public interface PurchaseDao {
     List<PurchaseTransaction> selectByContractAddress(String address);
     List<PurchaseTransaction> selectByPurchaser(String purchaser);
     List<PurchaseTransaction> selectByImageOwner(String imageOwner);
+    int updateByTxID(PurchaseTransaction ptx);
 }

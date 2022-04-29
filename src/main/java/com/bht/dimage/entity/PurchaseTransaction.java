@@ -7,6 +7,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class PurchaseTransaction {
+
+    @ApiModelProperty(value = "交易ID", required = false)
+    private long txID;
     @ApiModelProperty(value = "交易合约地址", required = true)
     private String contractAddress;
     @ApiModelProperty(value = "购买者", required = true)
@@ -30,6 +33,7 @@ public class PurchaseTransaction {
     /*
      * records purchase transaction's state
      *  value  |                        meaning
+     *   -3    |  transaction has expired
      *   -2    |  purchase cancelled by purchaser
      *   -1    |  purchase declined by owner
      *    0    |  transaction done
@@ -38,6 +42,14 @@ public class PurchaseTransaction {
      * */
     @ApiModelProperty(value = "交易状态", required = false)
     private int state;
+
+    public long getTxID() {
+        return txID;
+    }
+
+    public void setTxID(long txID) {
+        this.txID = txID;
+    }
 
     public String getContractAddress() {
         return contractAddress;
