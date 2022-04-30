@@ -148,4 +148,25 @@ class DimageApplicationTests {
 //			System.out.println(ptx.getState());
 		}
 	}
+
+	@Test
+	void batchinsert() {
+		PurchaseTransaction ptx = new PurchaseTransaction();
+		long start = System.currentTimeMillis();
+		for (int i=0; i< 100;i++) {
+			ptx.setContractAddress("0x678695403S890");
+			ptx.setPurchaser("pu3");
+			ptx.setImageOwner("owner");
+			ptx.setImageAuthor("author");
+			ptx.setImageID(1);
+			ptx.setOffer("8888888000000000");
+			ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()-36000));
+			ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
+			ptx.setDuration(3000);
+			ptx.setIsClosed(0);
+			purchaseDao.insertPurchase(ptx);
+		}
+		long cost = System.currentTimeMillis() - start;
+		System.out.println("Time used = "+ cost + "ms");
+	}
 }

@@ -12,10 +12,10 @@
             title,thumbnailPath,create_time)
         values (
             #{imageID},#{author},#{owner},
-            #{ipfsHash},#{sha3},#{signature},#
-            {title},#{thumbnailPath},#{releaseTime})
+            #{ipfsHash},#{sha3},#{signature},
+            #{title},#{thumbnailPath},#{releaseTime})
     </insert>
-    <select id="countImageBySHA3" parameterType="java.lang.String" resultType="com.bht.dimage.entity.Image">
+    <select id="selectImageBySHA3" parameterType="java.lang.String" resultType="com.bht.dimage.entity.Image">
         select * from `tb_image`
         where #{sha3}=sha3
     </select>

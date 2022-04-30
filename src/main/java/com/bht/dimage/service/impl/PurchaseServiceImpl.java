@@ -4,8 +4,8 @@ import com.bht.dimage.common.RestResult;
 import com.bht.dimage.dao.PurchaseDao;
 import com.bht.dimage.dto.UpdatePurchaseDto;
 import com.bht.dimage.entity.PurchaseTransaction;
+import com.bht.dimage.service.AsyncService;
 import com.bht.dimage.service.PurchaseService;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,6 +18,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Resource
     PurchaseDao purchaseDao;
+
+    @Resource
+    AsyncService asyncService;
 
     @Override
     public RestResult createPurchase(PurchaseTransaction ptx) {
@@ -45,27 +48,36 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (ptxList == null) {
             return RestResult.Fail().message("database error!");
         }
-        return RestResult.Success().data(ptxList);
-    }
-
-
-    @Override
-    public RestResult fetchTxByOwner(String owner) {
-        List<PurchaseTransaction> ptxList = purchaseDao.selectByImageOwner(owner);
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        List<PurchaseTransaction> NeedUpdate = new ArrayList<PurchaseTransaction>();
+        List<PurchaseTransaction> NeedUpdate = new ArrayList<>();
         for(PurchaseTransaction ptx: ptxList) {
-            if (now.after(ptx.getEndTime())) {
+            if (ptx.getIsClosed() == 0 && now.after(ptx.getEndTime())) {
                 ptx.setIsClosed(1);
                 NeedUpdate.add(ptx);
             }
         }
         if (NeedUpdate.size() != 0) {
-
+            asyncService.updatePurchase(ptxList);
         }
+        return RestResult.Success().data(ptxList);
+    }
 
+    @Override
+    public RestResult fetchTxByOwner(String owner) {
+        List<PurchaseTransaction> ptxList = purchaseDao.selectByImageOwner(owner);
         if (ptxList == null) {
             return RestResult.Fail().message("database error!");
+        }
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        List<PurchaseTransaction> NeedUpdate = new ArrayList<>();
+        for(PurchaseTransaction ptx: ptxList) {
+            if (ptx.getIsClosed() == 0 && now.after(ptx.getEndTime())) {
+                ptx.setIsClosed(1);
+                NeedUpdate.add(ptx);
+            }
+        }
+        if (NeedUpdate.size() != 0) {
+            asyncService.updatePurchase(ptxList);
         }
         return RestResult.Success().data(ptxList);
     }

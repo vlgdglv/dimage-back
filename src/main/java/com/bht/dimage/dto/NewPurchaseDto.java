@@ -10,6 +10,7 @@ public class NewPurchaseDto {
     private String imageOwner;
     private String imageAuthor;
     private long imageID;
+    private String sha3;
     private String offer;
     private long launchTime;
     private long duration;
@@ -53,6 +54,10 @@ public class NewPurchaseDto {
     public void setImageID(long imageID) {
         this.imageID = imageID;
     }
+
+    public String getSha3() { return sha3; }
+
+    public void setSha3(String sha3) { this.sha3 = sha3; }
 
     public String getOffer() {
         return offer;

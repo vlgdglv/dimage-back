@@ -20,6 +20,8 @@ public class PurchaseTransaction {
     private String imageAuthor;
     @ApiModelProperty(value = "图片ID", required = true)
     private long imageID;
+    @ApiModelProperty(value = "图片sha3", required = true)
+    private String sha3;
     @ApiModelProperty(value = "出价", required = true)
     private String offer;
     @ApiModelProperty(value = "发起时间", required = true)
@@ -84,6 +86,10 @@ public class PurchaseTransaction {
     }
 
     public void setImageID(long imageID) { this.imageID = imageID; }
+
+    public String getSha3() { return sha3; }
+
+    public void setSha3(String sha3) { this.sha3 = sha3; }
 
     public String getOffer() {
         return offer;

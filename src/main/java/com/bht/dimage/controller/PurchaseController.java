@@ -8,13 +8,17 @@ import com.bht.dimage.entity.PurchaseTransaction;
 import com.bht.dimage.service.PurchaseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Api(tags = "交易接口")
+@EnableAsync
 @RestController
 public class PurchaseController {
 
@@ -37,6 +41,8 @@ public class PurchaseController {
         if ( imageAuthor == null || imageAuthor.equals("")){ return RestResult.Fail().message("No image author address!");}
         long imageID = newPurchaseDto.getImageID();
         if( imageID < 0) {  return RestResult.Fail().message("invalid image ID!");}
+        String sha3 = newPurchaseDto.getSha3();
+        if (sha3 == null || sha3.equals("")) { return RestResult.Fail().message("Invalid sha3!");}
         String offer = newPurchaseDto.getOffer();
         if (offer == null || offer.equals("") ) { return RestResult.Fail().message("invalid ether offer!");}
         long launchTime = newPurchaseDto.getLaunchTime();
@@ -51,6 +57,7 @@ public class PurchaseController {
         ptx.setImageOwner(imageOwner);
         ptx.setImageAuthor(imageAuthor);
         ptx.setImageID(imageID);
+        ptx.setSha3(sha3);
         ptx.setOffer(offer);
         ptx.setLaunchTime(new Timestamp(launchTime*1000));
         ptx.setEndTime(new Timestamp(endTime*1000));
@@ -66,6 +73,7 @@ public class PurchaseController {
         if (purchaser == null || purchaser.equals("")) {
             return RestResult.Fail().message("Invalid Purchaser Address!");
         }
+
         return purchaseService.fetchTxByPurchaser(purchaser);
     }
 

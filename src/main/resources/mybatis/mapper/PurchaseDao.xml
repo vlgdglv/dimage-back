@@ -12,6 +12,7 @@
         <result property="imageOwner" column="image_owner"/>
         <result property="imageAuthor" column="image_author"/>
         <result property="imageID" column="image_id"/>
+        <result property="sha3" column="sha3"/>
         <result property="offer" column="offer"/>
         <result property="launchTime" column="launch_time"/>
         <result property="endTime" column="end_time"/>
@@ -21,11 +22,11 @@
 
     <insert id="insertPurchase" parameterType="com.bht.dimage.entity.PurchaseTransaction">
         insert into `tb_purchase` (
-            contract_address,purchaser,image_owner, image_author,
-            image_id, offer, launch_time, end_time, isClosed, state)
+            contract_address,purchaser,image_owner, image_author, image_id,
+            sha3, offer, launch_time, end_time, isClosed, state)
         values (
-            #{contractAddress}, #{purchaser}, #{imageOwner}, #{imageAuthor},
-            #{imageID}, #{offer}, #{launchTime}, #{endTime},#{isClosed},#{state})
+            #{contractAddress}, #{purchaser}, #{imageOwner}, #{imageAuthor},#{imageID},
+            #{sha3} #{offer}, #{launchTime}, #{endTime},#{isClosed},#{state})
     </insert>
     <select id="selectByPurchaserAndImage" resultMap="ptxMapper">
         select * from `tb_purchase`
@@ -46,9 +47,10 @@
     <update id="updateByTxID"  parameterType="com.bht.dimage.entity.PurchaseTransaction">
         update `tb_purchase`
         <set>
-            <if test="isClosed != null"> isClosed = #{isClosed}</if>
+            <if test="isClosed != null"> isClosed = #{isClosed},</if>
             <if test="state != null">state = #{state}</if>
         </set>
+<!--        set isClosed = #{isClosed},state = #{state}-->
         where tx_id = #{txID}
     </update>
 </mapper>

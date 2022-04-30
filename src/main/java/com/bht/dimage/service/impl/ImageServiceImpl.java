@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Date;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -29,6 +32,16 @@ public class ImageServiceImpl implements ImageService {
             return RestResult.Success();
         }else {
             return RestResult.Fail().message("Insert failed");
+        }
+    }
+
+    @Override
+    public RestResult selectImageBySHA(String sha3) {
+        List<Image> imageList = imageDao.selectImageBySHA3(sha3);
+        if (imageList == null) {
+            return RestResult.Fail().message("Data base error");
+        }else {
+            return RestResult.Success().data(imageList);
         }
     }
 }

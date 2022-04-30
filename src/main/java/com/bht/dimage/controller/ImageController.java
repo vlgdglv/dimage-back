@@ -7,11 +7,7 @@ import com.bht.dimage.service.ImageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
 
@@ -28,7 +24,7 @@ public class ImageController {
     public RestResult<String> newImage(@RequestBody NewImageDto newImageDto){
         Image image = new Image();
         //check parameters
-        long imageID = newImageDto.getImageID();
+        long imageID = newImageDto.getImgID();
         if ( imageID < 0) { return RestResult.Fail().message("Invalid id!"); }
         String author = newImageDto.getAuthor();
         if ( author == null || author.equals("")) { return RestResult.Fail().message("No author!"); }
@@ -52,6 +48,7 @@ public class ImageController {
         image.setTitle(title);
         image.setThumbnailPath(thumbnailPath);
 
+//        return RestResult.Fail().message("test fail");
         RestResult<String> createResult = imageService.createImage(image);
         if (createResult.isSuccess()){
             return RestResult.Success().message("create successfully");
@@ -59,4 +56,13 @@ public class ImageController {
             return createResult;
         }
     }
+
+    @ApiOperation(value = "查找图片", notes = "根据sha3，查找图片信息")
+    @ResponseBody
+    @GetMapping(value = "/getImagebysha")
+    public RestResult getImageBySHA(@RequestParam String sha3) {
+        if ( sha3 == null || sha3.equals("")) { return RestResult.Fail().message("No sha3!"); }
+        return imageService.selectImageBySHA(sha3);
+    }
+
 }
