@@ -26,7 +26,7 @@
             sha3, offer, launch_time, end_time, isClosed, state)
         values (
             #{contractAddress}, #{purchaser}, #{imageOwner}, #{imageAuthor},#{imageID},
-            #{sha3} #{offer}, #{launchTime}, #{endTime},#{isClosed},#{state})
+            #{sha3},#{offer}, #{launchTime}, #{endTime}, #{isClosed}, #{state})
     </insert>
     <select id="selectByPurchaserAndImage" resultMap="ptxMapper">
         select * from `tb_purchase`
@@ -36,13 +36,17 @@
         select * from `tb_purchase`
         where #{address}=contract_address
     </select>
-    <select id="selectByPurchaser" resultMap="ptxMapper">
-        select * from `tb_purchase`
-        where #{purchaser}=purchaser
-    </select>
     <select id="selectByImageOwner" resultMap="ptxMapper">
         select * from `tb_purchase`
         where #{imageOwner}=image_owner
+        ORDER BY end_time
+        limit #{begin}, #{count}
+    </select>
+    <select id="selectByPurchaser" resultMap="ptxMapper">
+        select * from `tb_purchase`
+        where #{purchaser}=purchaser
+        ORDER BY end_time
+        limit #{begin}, #{count}
     </select>
     <update id="updateByTxID"  parameterType="com.bht.dimage.entity.PurchaseTransaction">
         update `tb_purchase`
@@ -53,4 +57,10 @@
 <!--        set isClosed = #{isClosed},state = #{state}-->
         where tx_id = #{txID}
     </update>
+    <select id="countByPurchaser" resultType="java.lang.Integer">
+        select count(*) from `tb_purchase` where #{purchaser}=purchaser
+    </select>
+    <select id="countByOwner" resultType="java.lang.Integer">
+        select count(*) from `tb_purchase` where #{owner}=image_owner
+    </select>
 </mapper>

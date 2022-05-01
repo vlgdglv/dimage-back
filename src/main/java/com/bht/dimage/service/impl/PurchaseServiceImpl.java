@@ -27,7 +27,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         List<PurchaseTransaction> ptxList = null;
         ptxList = purchaseDao.selectByPurchaserAndImage(ptx.getPurchaser(), ptx.getImageID());
         if (ptxList.size() != 0 ) {
-            return RestResult.Fail().message("You already made an offer for this!");
+//            return RestResult.Fail().message("You already made an offer for this!");
         }
         ptxList = purchaseDao.selectByContractAddress(ptx.getContractAddress());
         if (ptxList.size() != 0 ) {
@@ -43,10 +43,11 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public RestResult fetchTxByPurchaser(String purchaser) {
-        List<PurchaseTransaction> ptxList = purchaseDao.selectByPurchaser(purchaser);
+    public List<PurchaseTransaction> fetchTxByOwner(String owner, int currentPage, int pageCount) {
+        int begin = (currentPage - 1 ) * pageCount;
+        List<PurchaseTransaction> ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount);
         if (ptxList == null) {
-            return RestResult.Fail().message("database error!");
+            return null;
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
         List<PurchaseTransaction> NeedUpdate = new ArrayList<>();
@@ -59,14 +60,15 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (NeedUpdate.size() != 0) {
             asyncService.updatePurchase(ptxList);
         }
-        return RestResult.Success().data(ptxList);
+        return ptxList;
     }
 
     @Override
-    public RestResult fetchTxByOwner(String owner) {
-        List<PurchaseTransaction> ptxList = purchaseDao.selectByImageOwner(owner);
+    public List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount) {
+        int begin = (currentPage - 1 ) * pageCount;
+        List<PurchaseTransaction> ptxList = purchaseDao.selectByPurchaser(purchaser, begin, pageCount);
         if (ptxList == null) {
-            return RestResult.Fail().message("database error!");
+            return null;
         }
         Timestamp now = new Timestamp(System.currentTimeMillis());
         List<PurchaseTransaction> NeedUpdate = new ArrayList<>();
@@ -79,7 +81,8 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (NeedUpdate.size() != 0) {
             asyncService.updatePurchase(ptxList);
         }
-        return RestResult.Success().data(ptxList);
+
+        return ptxList;
     }
 
     @Override
@@ -93,6 +96,9 @@ public class PurchaseServiceImpl implements PurchaseService {
         int newState = updatePurchaseDto.getNewState();
         int oldStateOrigin = ptx.getState();
         int oldStateProvided = updatePurchaseDto.getOldState();
+        System.out.println(oldStateProvided);
+        System.out.println(oldStateOrigin);
+
         if (oldStateProvided != oldStateOrigin) {
             return RestResult.Fail().message("Given state is incorrect");
         }
@@ -121,8 +127,8 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
         ptx.setState(newState);
 
-        if (purchaseDao.insertPurchase(ptx) == 1) {
-            return RestResult.Success().message("State updated");
+        if (purchaseDao.updateByTxID(ptx) == 1) {
+            return RestResult.Success().data(ptx);
         }else{
             return RestResult.Fail().message("Databases error!");
         }

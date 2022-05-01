@@ -117,7 +117,7 @@ class DimageApplicationTests {
 	void purchaseSelectTest() {
 		List<PurchaseTransaction> ptxList = null;
 
-		ptxList = purchaseDao.selectByPurchaser("purchaser4");
+		ptxList = purchaseDao.selectByPurchaser("purchaser4",1,5);
 		System.out.println("null?" + ptxList == null);
 		System.out.println("By purchase:" + ptxList.size());
 		for( PurchaseTransaction ptx: ptxList){
@@ -133,7 +133,7 @@ class DimageApplicationTests {
 //			System.out.println(ptx.getState());
 		}
 
-		ptxList = purchaseDao.selectByImageOwner("ownerAFS");
+		ptxList = purchaseDao.selectByImageOwner("ownerAFS",1,5);
 		System.out.println("By owner:" + ptxList.size());
 		for( PurchaseTransaction ptx: ptxList){
 			System.out.println("ptx contract address=" + ptx.getContractAddress());
@@ -153,17 +153,19 @@ class DimageApplicationTests {
 	void batchinsert() {
 		PurchaseTransaction ptx = new PurchaseTransaction();
 		long start = System.currentTimeMillis();
-		for (int i=0; i< 100;i++) {
-			ptx.setContractAddress("0x678695403S890");
-			ptx.setPurchaser("pu3");
-			ptx.setImageOwner("owner");
-			ptx.setImageAuthor("author");
-			ptx.setImageID(1);
+		for (int i=0; i< 20;i++) {
+			ptx.setContractAddress("0x1234567890" + i);
+			ptx.setPurchaser("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB");
+			ptx.setImageOwner("own" + i);
+			ptx.setImageAuthor("author"+ i);
+			ptx.setSha3("sha3"+i);
+			ptx.setImageID(i);
 			ptx.setOffer("8888888000000000");
-			ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()-36000));
-			ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
-			ptx.setDuration(3000);
+			ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+			ptx.setEndTime(new Timestamp(System.currentTimeMillis()+36000000));
+			ptx.setDuration(36000);
 			ptx.setIsClosed(0);
+			ptx.setState(1);
 			purchaseDao.insertPurchase(ptx);
 		}
 		long cost = System.currentTimeMillis() - start;

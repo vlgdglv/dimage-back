@@ -2,10 +2,12 @@ package com.bht.dimage.controller;
 
 
 import com.bht.dimage.common.RestResult;
+import com.bht.dimage.dao.PurchaseDao;
 import com.bht.dimage.dto.NewPurchaseDto;
 import com.bht.dimage.dto.UpdatePurchaseDto;
 import com.bht.dimage.entity.PurchaseTransaction;
 import com.bht.dimage.service.PurchaseService;
+import com.bht.dimage.vo.PurchaseTransactionVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -24,6 +26,9 @@ public class PurchaseController {
 
     @Resource
     PurchaseService purchaseService;
+
+    @Resource
+    PurchaseDao purchaseDao;
 
     @ApiOperation(value = "新增交易", notes = "发起交易，保存交易信息")
     @ResponseBody
@@ -66,25 +71,54 @@ public class PurchaseController {
         return purchaseService.createPurchase(ptx);
     }
 
-    @ApiOperation(value = "获取交易详情", notes = "根据购买者获取交易")
-    @ResponseBody
-    @GetMapping(value = "/getpurchasertx")
-    public RestResult getTxByPurchaser(@RequestParam String purchaser) {
-        if (purchaser == null || purchaser.equals("")) {
-            return RestResult.Fail().message("Invalid Purchaser Address!");
-        }
-
-        return purchaseService.fetchTxByPurchaser(purchaser);
-    }
-
     @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
     @ResponseBody
     @GetMapping(value = "/getownertx")
-    public RestResult getTxByOwner(@RequestParam String owner) {
+    public RestResult getTxByOwner(@RequestParam String owner,
+                                   @RequestParam(defaultValue = "1") int currentPage,
+                                   @RequestParam(defaultValue = "5") int pageCount) {
         if (owner == null || owner.equals("")) {
             return RestResult.Fail().message("Invalid Purchaser Address!");
         }
-        return purchaseService.fetchTxByOwner(owner);
+        List<PurchaseTransaction> ptxList= purchaseService.fetchTxByOwner(owner, currentPage, pageCount);
+        if (ptxList == null) {
+            return RestResult.Fail().message("database error!");
+        }else {
+            int count = purchaseDao.countByOwner(owner);
+            int totPage = (int)Math.ceil( (double)count/ (double)pageCount );
+            System.out.println(totPage);
+            PurchaseTransactionVo ptvo = new PurchaseTransactionVo();
+            ptvo.setCurrentPage(currentPage);
+            ptvo.setTotalPages(totPage);
+            ptvo.setPtxList(ptxList);
+
+            return RestResult.Success().data(ptvo);
+        }
+    }
+
+    @ApiOperation(value = "获取交易详情", notes = "根据购买者获取交易")
+    @ResponseBody
+    @GetMapping(value = "/getpurchasertx")
+    public RestResult getTxByPurchaser(@RequestParam String purchaser,
+                                       @RequestParam(defaultValue = "1") int currentPage,
+                                       @RequestParam(defaultValue = "5") int pageCount) {
+        if (purchaser == null || purchaser.equals("")) {
+            return RestResult.Fail().message("Invalid Purchaser Address!");
+        }
+        List<PurchaseTransaction> ptxList= purchaseService.fetchTxByPurchaser(purchaser, currentPage, pageCount);
+        if (ptxList == null) {
+            return RestResult.Fail().message("database error!");
+        }else {
+            int count = purchaseDao.countByPurchaser(purchaser);
+            int totPage = (int)Math.ceil( (double)count/ (double)pageCount );
+            System.out.println(totPage);
+            PurchaseTransactionVo ptvo = new PurchaseTransactionVo();
+            ptvo.setCurrentPage(currentPage);
+            ptvo.setTotalPages(totPage);
+            ptvo.setPtxList(ptxList);
+
+            return RestResult.Success().data(ptvo);
+        }
     }
 
     @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
@@ -99,8 +133,6 @@ public class PurchaseController {
         int newState = updatePurchaseDto.getNewState();
         if( newState == oldState ) { return RestResult.Fail().message("No state change"); }
 
-        purchaseService.updateTx(updatePurchaseDto);
-
-        return RestResult.Fail();
+        return purchaseService.updateTx(updatePurchaseDto);
     }
 }
