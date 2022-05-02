@@ -76,16 +76,28 @@ public class PurchaseController {
     @GetMapping(value = "/getownertx")
     public RestResult getTxByOwner(@RequestParam String owner,
                                    @RequestParam(defaultValue = "1") int currentPage,
-                                   @RequestParam(defaultValue = "5") int pageCount) {
+                                   @RequestParam(defaultValue = "5") int pageCount,
+                                   @RequestParam(defaultValue = "0") int state) {
         if (owner == null || owner.equals("")) {
             return RestResult.Fail().message("Invalid Purchaser Address!");
         }
-        List<PurchaseTransaction> ptxList= purchaseService.fetchTxByOwner(owner, currentPage, pageCount);
+        if (pageCount < 0 || currentPage < 0) {
+            return RestResult.Fail().message("Invalid page");
+        }
+        if (state < -3 || state > 2) {
+            return RestResult.Fail().message("Invalid state!");
+        }
+        List<PurchaseTransaction> ptxList= purchaseService.fetchTxByOwner(owner, currentPage, pageCount,state);
         if (ptxList == null) {
             return RestResult.Fail().message("database error!");
         }else {
-            int count = purchaseDao.countByOwner(owner);
-            int totPage = (int)Math.ceil( (double)count/ (double)pageCount );
+            int count, totPage;
+            if (state != -3) {
+                count = purchaseDao.countByOwner(owner, state);
+            }else {
+                count = purchaseDao.countExpiredByOwner(owner);
+            }
+            totPage = (int) Math.ceil((double) count / (double) pageCount);
             System.out.println(totPage);
             PurchaseTransactionVo ptvo = new PurchaseTransactionVo();
             ptvo.setCurrentPage(currentPage);
@@ -101,17 +113,29 @@ public class PurchaseController {
     @GetMapping(value = "/getpurchasertx")
     public RestResult getTxByPurchaser(@RequestParam String purchaser,
                                        @RequestParam(defaultValue = "1") int currentPage,
-                                       @RequestParam(defaultValue = "5") int pageCount) {
+                                       @RequestParam(defaultValue = "5") int pageCount,
+                                       @RequestParam(defaultValue = "0") int state) {
         if (purchaser == null || purchaser.equals("")) {
             return RestResult.Fail().message("Invalid Purchaser Address!");
         }
-        List<PurchaseTransaction> ptxList= purchaseService.fetchTxByPurchaser(purchaser, currentPage, pageCount);
+        if (pageCount < 0 || currentPage < 0) {
+            return RestResult.Fail().message("Invalid page");
+        }
+        if (state < -3 || state > 2) {
+            return RestResult.Fail().message("Invalid state!");
+        }
+        List<PurchaseTransaction> ptxList= purchaseService.fetchTxByPurchaser(purchaser, currentPage, pageCount,state);
         if (ptxList == null) {
             return RestResult.Fail().message("database error!");
         }else {
-            int count = purchaseDao.countByPurchaser(purchaser);
-            int totPage = (int)Math.ceil( (double)count/ (double)pageCount );
-            System.out.println(totPage);
+            int count, totPage;
+            if (state == -3) {
+                count = purchaseDao.countExpiredByPurchaser(purchaser);
+            }else {
+                count = purchaseDao.countByPurchaser(purchaser, state);
+            }
+            totPage = (int)Math.ceil( (double)count / (double)pageCount );
+            System.out.println(count);
             PurchaseTransactionVo ptvo = new PurchaseTransactionVo();
             ptvo.setCurrentPage(currentPage);
             ptvo.setTotalPages(totPage);

@@ -43,9 +43,18 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public List<PurchaseTransaction> fetchTxByOwner(String owner, int currentPage, int pageCount) {
+    public List<PurchaseTransaction> fetchTxByOwner(String owner, int currentPage, int pageCount, int state) {
         int begin = (currentPage - 1 ) * pageCount;
-        List<PurchaseTransaction> ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount);
+        List<PurchaseTransaction> ptxList ;
+        if (state == -3) {
+            ptxList = purchaseDao.selectExpiredByOwner(owner,begin, pageCount);
+        }else if (state == 0) {
+            ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, 0);
+            ptxList.addAll(purchaseDao.selectByImageOwner(owner, begin, pageCount, 2));
+        }else {
+            ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, state);
+        }
+
         if (ptxList == null) {
             return null;
         }
@@ -55,6 +64,7 @@ public class PurchaseServiceImpl implements PurchaseService {
             if (ptx.getIsClosed() == 0 && now.after(ptx.getEndTime())) {
                 ptx.setIsClosed(1);
                 NeedUpdate.add(ptx);
+                ptxList.remove(ptx);
             }
         }
         if (NeedUpdate.size() != 0) {
@@ -64,9 +74,14 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount) {
+    public List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount, int state) {
         int begin = (currentPage - 1 ) * pageCount;
-        List<PurchaseTransaction> ptxList = purchaseDao.selectByPurchaser(purchaser, begin, pageCount);
+        List<PurchaseTransaction> ptxList ;
+        if (state == -3) {
+            ptxList = purchaseDao.selectExpiredByPurchaser(purchaser, begin ,pageCount);
+        }else {
+            ptxList = purchaseDao.selectByPurchaser(purchaser, begin, pageCount, state);
+        }
         if (ptxList == null) {
             return null;
         }
@@ -76,6 +91,7 @@ public class PurchaseServiceImpl implements PurchaseService {
             if (ptx.getIsClosed() == 0 && now.after(ptx.getEndTime())) {
                 ptx.setIsClosed(1);
                 NeedUpdate.add(ptx);
+                ptxList.remove(ptx);
             }
         }
         if (NeedUpdate.size() != 0) {
@@ -111,18 +127,18 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
         if (oldStateOrigin==1) {
             if (newState == 2 && !from.equals(ptx.getImageOwner())) {
-                return RestResult.Fail().message("No permission");
+                return RestResult.Fail().message("No permission 1-2");
             }
             if (newState == -1 && !from.equals(ptx.getImageOwner())) {
-                return RestResult.Fail().message("No permission");
+                return RestResult.Fail().message("No permission 1--1");
             }
             if (newState == -2 && !from.equals(ptx.getPurchaser())) {
-                return RestResult.Fail().message("No permission");
+                return RestResult.Fail().message("No permission 1--2");
             }
         }
         if (oldStateOrigin==2 && newState==0){
             if (!from.equals(ptx.getPurchaser())){
-                return RestResult.Fail().message("No permission");
+                return RestResult.Fail().message("No permission 2-0");
             }
         }
         ptx.setState(newState);

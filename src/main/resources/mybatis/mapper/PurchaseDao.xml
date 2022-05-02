@@ -39,12 +39,16 @@
     <select id="selectByImageOwner" resultMap="ptxMapper">
         select * from `tb_purchase`
         where #{imageOwner}=image_owner
+        <if test="state != null"> and state=#{state} </if>
+        <if test="state == 1"> and isClosed = 0</if>
         ORDER BY end_time
         limit #{begin}, #{count}
     </select>
     <select id="selectByPurchaser" resultMap="ptxMapper">
         select * from `tb_purchase`
         where #{purchaser}=purchaser
+        <if test="state != null"> and state=#{state} </if>
+        <if test="state == 1"> and isClosed = 0</if>
         ORDER BY end_time
         limit #{begin}, #{count}
     </select>
@@ -58,9 +62,35 @@
         where tx_id = #{txID}
     </update>
     <select id="countByPurchaser" resultType="java.lang.Integer">
-        select count(*) from `tb_purchase` where #{purchaser}=purchaser
+        select count(*) from `tb_purchase`
+        where #{purchaser}=purchaser
+            <if test="state != null"> and state=#{state} </if>
+            <if test="state == 1"> and isClosed = 0</if>
     </select>
     <select id="countByOwner" resultType="java.lang.Integer">
-        select count(*) from `tb_purchase` where #{owner}=image_owner
+        select count(*) from `tb_purchase`
+        where #{owner}=image_owner
+            <if test="state != null"> and state=#{state} </if>
+            <if test="state == 1"> and isClosed = 0</if>
+    </select>
+    <select id="selectExpiredByOwner" resultMap="ptxMapper">
+        select * from `tb_purchase`
+        where #{imageOwner}=image_owner and end_time &lt; NOW()
+        ORDER BY end_time
+        limit #{begin}, #{count}
+    </select>
+    <select id="selectExpiredByPurchaser" resultMap="ptxMapper">
+        select * from `tb_purchase`
+        where #{purchaser}=purchaser and end_time &lt; NOW()
+        ORDER BY end_time
+        limit #{begin}, #{count}
+    </select>
+    <select id="countExpiredByOwner" resultType="java.lang.Integer">
+        select count(*) from `tb_purchase`
+        where #{imageOwner}=image_owner and end_time &lt; NOW()
+    </select>
+    <select id="countExpiredByPurchaser" resultType="java.lang.Integer">
+        select count(*) from `tb_purchase`
+        where #{purchaser}=purchaser and end_time &lt; NOW()
     </select>
 </mapper>

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PurchaseService {
     RestResult createPurchase(PurchaseTransaction ptx);
-    List<PurchaseTransaction> fetchTxByOwner(String owner, int currentPage, int pageCount);
-    List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount);
+    List<PurchaseTransaction> fetchTxByOwner(String owner, int currentPage, int pageCount, int state);
+    List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount, int state);
     RestResult updateTx(UpdatePurchaseDto updatePurchaseDto);
 }
