@@ -17,4 +17,6 @@ public interface PurchaseDao {
     int countByPurchaser(String purchaser, int state);
     int countExpiredByOwner(String owner);
     int countExpiredByPurchaser(String purchaser);
+    int updateExpiredByOwner(String imageOwner);
+    int updateExpiredByPurchaser(String purchaser);
 }

@@ -161,19 +161,19 @@ class DimageApplicationTests {
 	void batchinsert() {
 		PurchaseTransaction ptx = new PurchaseTransaction();
 		long start = System.currentTimeMillis();
-		for (int i=0; i< 3;i++) {
+		for (int i=0; i< 20;i++) {
 			ptx.setContractAddress("0xaaaaaaaaaaaaaaaa" + i);
 //			ptx.setContractAddress("0x1234567890" + i);
 			ptx.setPurchaser("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB");
 //			ptx.setPurchaser("pur"+ i);
-			ptx.setImageOwner("own"  );
+			ptx.setImageOwner("own" + i);
 //			ptx.setImageOwner("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB" );
 			ptx.setImageAuthor("author"+ i);
 			ptx.setSha3("sha3"+i);
 			ptx.setImageID(i);
 			ptx.setOffer("8888888000000000");
-			ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()-30000));
-			ptx.setEndTime(new Timestamp(System.currentTimeMillis()));
+			ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
+			ptx.setEndTime(new Timestamp(System.currentTimeMillis()+1800000));
 			ptx.setDuration(36000);
 			ptx.setIsClosed(0);
 			ptx.setState(1);

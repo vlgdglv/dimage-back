@@ -44,6 +44,7 @@
         ORDER BY end_time
         limit #{begin}, #{count}
     </select>
+
     <select id="selectByPurchaser" resultMap="ptxMapper">
         select * from `tb_purchase`
         where #{purchaser}=purchaser
@@ -75,22 +76,30 @@
     </select>
     <select id="selectExpiredByOwner" resultMap="ptxMapper">
         select * from `tb_purchase`
-        where #{imageOwner}=image_owner and end_time &lt; NOW()
+        where #{imageOwner}=image_owner and end_time &lt; NOW() and state = 1
         ORDER BY end_time
         limit #{begin}, #{count}
     </select>
     <select id="selectExpiredByPurchaser" resultMap="ptxMapper">
         select * from `tb_purchase`
-        where #{purchaser}=purchaser and end_time &lt; NOW()
+        where #{purchaser}=purchaser and end_time &lt; NOW() and state = 1
         ORDER BY end_time
         limit #{begin}, #{count}
     </select>
     <select id="countExpiredByOwner" resultType="java.lang.Integer">
         select count(*) from `tb_purchase`
-        where #{imageOwner}=image_owner and end_time &lt; NOW()
+        where #{imageOwner}=image_owner and end_time &lt; NOW() and state = 1
     </select>
     <select id="countExpiredByPurchaser" resultType="java.lang.Integer">
         select count(*) from `tb_purchase`
-        where #{purchaser}=purchaser and end_time &lt; NOW()
+        where #{purchaser}=purchaser and end_time &lt; NOW() and state = 1
     </select>
+    <update id="updateExpiredByOwner" >
+        update `tb_purchase` set isClosed=1
+        where #{imageOwner}=image_owner and end_time &lt; NOW()
+    </update>
+    <update id="updateExpiredByPurchaser" >
+        update `tb_purchase` set isClosed=1
+        where #{purchaser}=purchaser and end_time &lt; NOW()
+    </update>
 </mapper>

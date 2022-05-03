@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -44,8 +45,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public List<PurchaseTransaction> fetchTxByOwner(String owner, int currentPage, int pageCount, int state) {
+        purchaseDao.updateExpiredByOwner(owner);
         int begin = (currentPage - 1 ) * pageCount;
-        List<PurchaseTransaction> ptxList ;
+        List<PurchaseTransaction> ptxList;
         if (state == -3) {
             ptxList = purchaseDao.selectExpiredByOwner(owner,begin, pageCount);
         }else if (state == 0) {
@@ -54,50 +56,25 @@ public class PurchaseServiceImpl implements PurchaseService {
         }else {
             ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, state);
         }
-
         if (ptxList == null) {
             return null;
-        }
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        List<PurchaseTransaction> NeedUpdate = new ArrayList<>();
-        for(PurchaseTransaction ptx: ptxList) {
-            if (ptx.getIsClosed() == 0 && now.after(ptx.getEndTime())) {
-                ptx.setIsClosed(1);
-                NeedUpdate.add(ptx);
-                ptxList.remove(ptx);
-            }
-        }
-        if (NeedUpdate.size() != 0) {
-            asyncService.updatePurchase(ptxList);
         }
         return ptxList;
     }
 
     @Override
     public List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount, int state) {
+        purchaseDao.updateExpiredByPurchaser(purchaser);
         int begin = (currentPage - 1 ) * pageCount;
         List<PurchaseTransaction> ptxList ;
         if (state == -3) {
-            ptxList = purchaseDao.selectExpiredByPurchaser(purchaser, begin ,pageCount);
+            ptxList = purchaseDao.selectExpiredByPurchaser(purchaser, begin, pageCount);
         }else {
             ptxList = purchaseDao.selectByPurchaser(purchaser, begin, pageCount, state);
         }
         if (ptxList == null) {
             return null;
         }
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        List<PurchaseTransaction> NeedUpdate = new ArrayList<>();
-        for(PurchaseTransaction ptx: ptxList) {
-            if (ptx.getIsClosed() == 0 && now.after(ptx.getEndTime())) {
-                ptx.setIsClosed(1);
-                NeedUpdate.add(ptx);
-                ptxList.remove(ptx);
-            }
-        }
-        if (NeedUpdate.size() != 0) {
-            asyncService.updatePurchase(ptxList);
-        }
-
         return ptxList;
     }
 
