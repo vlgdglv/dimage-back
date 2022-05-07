@@ -156,7 +156,6 @@ public class PurchaseController {
         int oldState = updatePurchaseDto.getOldState();
         int newState = updatePurchaseDto.getNewState();
         if( newState == oldState ) { return RestResult.Fail().message("No state change"); }
-
         return purchaseService.updateTx(updatePurchaseDto);
     }
 }

@@ -5,6 +5,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bht.dimage.dao.ImageDao">
+
+    <resultMap id="imageMapper" type="com.bht.dimage.entity.Image">
+        <result property="imageID" column="image_id"/>
+        <result property="author" column="author"/>
+        <result property="owner" column="owner"/>
+        <result property="ipfsHash" column="ipfs_hash"/>
+        <result property="sha3" column="sha3"/>
+        <result property="signature" column="signature"/>
+        <result property="thumbnailPath" column="thumbnail_path"/>
+        <result property="title" column="title"/>
+        <result property="releaseTime" column="create_time"/>
+        <result property="txCount" column="tx_count"/>
+    </resultMap>
+
     <insert id="insertImage" parameterType="com.bht.dimage.entity.Image">
         insert into `tb_image` (
             image_id,author,owner,
@@ -19,4 +33,14 @@
         select * from `tb_image`
         where #{sha3}=sha3
     </select>
+    <select id="selectImageByID" parameterType="java.lang.Long" resultType="com.bht.dimage.entity.Image">
+        select * from `tb_image`
+        where #{imageID}=image_id
+    </select>
+    <update id="updateImage" parameterType="com.bht.dimage.entity.Image">
+        update `tb_image` set
+        owner=#{owner}, signature=#{signature}, tx_count=#{txCount}
+        where image_id = #{imageID}
+    </update>
+
 </mapper>

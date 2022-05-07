@@ -1,14 +1,17 @@
 package com.bht.dimage.service.impl;
 
 import com.bht.dimage.common.RestResult;
+import com.bht.dimage.dao.ImageDao;
 import com.bht.dimage.dao.PurchaseDao;
 import com.bht.dimage.dto.UpdatePurchaseDto;
+import com.bht.dimage.entity.Image;
 import com.bht.dimage.entity.PurchaseTransaction;
 import com.bht.dimage.service.AsyncService;
 import com.bht.dimage.service.PurchaseService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,6 +22,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Resource
     PurchaseDao purchaseDao;
+
+    @Resource
+    ImageDao imageDao;
 
     @Resource
     AsyncService asyncService;
@@ -53,6 +59,8 @@ public class PurchaseServiceImpl implements PurchaseService {
         }else if (state == 0) {
             ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, 0);
             ptxList.addAll(purchaseDao.selectByImageOwner(owner, begin, pageCount, 2));
+            //TODO:update previous owner share ratio
+
         }else {
             ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, state);
         }
@@ -81,6 +89,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public RestResult updateTx(UpdatePurchaseDto updatePurchaseDto) {
         List<PurchaseTransaction> pl = purchaseDao.selectByContractAddress(updatePurchaseDto.getContractAddress());
+
         if (pl.size() == 0) {
             return RestResult.Fail().message("Contract not found");
         }
@@ -102,9 +111,20 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (newState == -3) {
             ptx.setIsClosed(1);
         }
+
         if (oldStateOrigin==1) {
-            if (newState == 2 && !from.equals(ptx.getImageOwner())) {
-                return RestResult.Fail().message("No permission 1-2");
+            if (newState == 2){
+                if (!from.equals(ptx.getImageOwner())) {
+                    return RestResult.Fail().message("No permission 1-2");
+                }else {
+                    //TODO: update owner
+                    Image image = imageDao.selectImageByID(ptx.getImageID()).get(0);
+                    image.setOwner(ptx.getPurchaser());
+                    image.setTxCount(image.getTxCount()+1);
+                    if (imageDao.updateImage(image) != 1){
+                        return RestResult.Fail().message("Databases error!");
+                    }
+                }
             }
             if (newState == -1 && !from.equals(ptx.getImageOwner())) {
                 return RestResult.Fail().message("No permission 1--1");
@@ -116,6 +136,14 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (oldStateOrigin==2 && newState==0){
             if (!from.equals(ptx.getPurchaser())){
                 return RestResult.Fail().message("No permission 2-0");
+            }else {
+                String sign = updatePurchaseDto.getSignature();
+                if (sign == null || sign.equals("")) {  return RestResult.Fail().message("No signature!"); }
+                Image image = imageDao.selectImageByID(ptx.getImageID()).get(0);
+                image.setSignature(sign);
+                if (imageDao.updateImage(image) != 1){
+                    return RestResult.Fail().message("Databases error!");
+                }
             }
         }
         ptx.setState(newState);

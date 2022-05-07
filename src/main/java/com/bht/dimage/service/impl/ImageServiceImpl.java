@@ -27,7 +27,7 @@ public class ImageServiceImpl implements ImageService {
             return RestResult.Fail().message("This image already exists.");
         }
         image.setReleaseTime(new Date(System.currentTimeMillis()));
-
+        image.setTxCount(0);
         if ( 1 == imageDao.insertImage(image)) {
             return RestResult.Success();
         }else {
@@ -43,5 +43,12 @@ public class ImageServiceImpl implements ImageService {
         }else {
             return RestResult.Success().data(imageList);
         }
+    }
+
+    @Override
+    public String getImageThumbnailPath(long imageID) {
+        List<Image> imgList = imageDao.selectImageByID(imageID);
+        Image image = imgList.get(0);
+        return image.getThumbnailPath();
     }
 }

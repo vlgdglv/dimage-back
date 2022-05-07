@@ -7,4 +7,6 @@ import org.springframework.stereotype.Service;
 public interface ImageService {
     RestResult<String> createImage(Image image);
     RestResult selectImageBySHA(String sha);
+
+    String getImageThumbnailPath(long imageID);
 }

@@ -1,22 +1,29 @@
 package com.bht.dimage.controller;
 
 import com.bht.dimage.common.RestResult;
+import com.bht.dimage.service.ImageService;
 import com.bht.dimage.util.FileUtil;
 import com.bht.dimage.vo.UploadImageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @Api(tags = "上传文件接口")
 @RestController
 public class UploadController {
+
+    @Resource
+    ImageService imageService;
 
     @ApiOperation(value = "上传文件", notes = "上传缩略图，并以其sha3作为文件名")
     @PostMapping(value = "/uploadImage" )
@@ -47,22 +54,52 @@ public class UploadController {
         }
     }
 
-    @ResponseBody
-    @GetMapping(value = "/thumbnail", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[]  getThumbnail(@RequestParam String name) {
-        String dirPath = FileUtil.getFilePath();
-//        System.out.println("Dir path:" + name);
-        String fullPath = dirPath + name;
-        File file = new File(fullPath);
-        FileInputStream inputStream = null;
-        byte[] bytes = new byte[0];
+    @ApiOperation(value = "获取缩略图", notes = "根据路径获取缩略图")
+    @PostMapping(value = "/thumbnail")
+    public void  getThumbnail(@RequestParam("imageID") long imageID, HttpServletResponse response) {
+        String path = imageService.getImageThumbnailPath(imageID);
+        File file = new File(path);
         try {
-            inputStream = new FileInputStream(file);
-            bytes = new byte[inputStream.available()];
-            inputStream.read(bytes, 0, inputStream.available());
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            FileInputStream fileInputStream = new FileInputStream(file);
+            response.setContentType("application/octet-stream");
+
+            ServletOutputStream outputStream = response.getOutputStream();
+            byte[] buffer = new byte[1024];
+            int index = 0;
+            while((index = fileInputStream.read(buffer))!=-1){
+                outputStream.write(buffer,0, index);
+            }
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return bytes;
     }
+
+    @ApiOperation(value = "获取缩略图", notes = "根据路径获取缩略图")
+    @PostMapping(value = "/thumbnailTest")
+    public void  getThumbnailTest(@RequestParam("path") String path, HttpServletResponse response) {
+        System.out.println("Dir path:" + path);
+        File file = new File(path);
+//        String name = path.substring(path.lastIndexOf(File.pathSeparator));
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            response.setContentType("application/octet-stream");
+
+            ServletOutputStream outputStream = response.getOutputStream();
+            byte[] buffer = new byte[1024];
+            int index = 0;
+            while((index = fileInputStream.read(buffer))!=-1){
+                outputStream.write(buffer,0, index);
+            }
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

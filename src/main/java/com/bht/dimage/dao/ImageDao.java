@@ -8,4 +8,6 @@ import java.util.List;
 public interface ImageDao {
     int insertImage(Image image);
     List<Image> selectImageBySHA3(String sha3);
+    List<Image> selectImageByID(long imageID);
+    int updateImage(Image image);
 }

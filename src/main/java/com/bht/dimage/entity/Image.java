@@ -25,7 +25,8 @@ public class Image {
     private String thumbnailPath;
     @ApiModelProperty(value = "发布时间", required = false)
     private Date releaseTime;
-    @ApiModelProperty(value = "持续时间", required = true)
+    @ApiModelProperty(value = "持续时间", required = false)
+    private int txCount;
 
 
     public long getImageID() {
@@ -90,4 +91,11 @@ public class Image {
         this.releaseTime = releaseTime;
     }
 
+    public int getTxCount() {
+        return txCount;
+    }
+
+    public void setTxCount(int txCount) {
+        this.txCount = txCount;
+    }
 }

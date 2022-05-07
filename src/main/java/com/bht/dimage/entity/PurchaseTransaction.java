@@ -44,6 +44,8 @@ public class PurchaseTransaction {
      * */
     @ApiModelProperty(value = "交易状态", required = false)
     private int state;
+    @ApiModelProperty(value = "前拥有者分红", required = false)
+    private int prevOwnerShareRatio;
 
     public long getTxID() {
         return txID;
@@ -126,4 +128,12 @@ public class PurchaseTransaction {
     public int getState() { return state; }
 
     public void setState(int state) { this.state = state; }
+
+    public int getPrevOwnerShareRatio() {
+        return prevOwnerShareRatio;
+    }
+
+    public void setPrevOwnerShareRatio(int prevOwnerShareRatio) {
+        this.prevOwnerShareRatio = prevOwnerShareRatio;
+    }
 }

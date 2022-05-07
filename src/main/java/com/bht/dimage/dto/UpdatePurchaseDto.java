@@ -5,7 +5,7 @@ public class UpdatePurchaseDto {
     private String from;
     private int oldState;
     private int newState;
-
+    private String signature;
     public String getContractAddress() {
         return contractAddress;
     }
@@ -36,5 +36,13 @@ public class UpdatePurchaseDto {
 
     public void setNewState(int newState) {
         this.newState = newState;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

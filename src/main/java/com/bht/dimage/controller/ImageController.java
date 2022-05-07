@@ -48,7 +48,6 @@ public class ImageController {
         image.setTitle(title);
         image.setThumbnailPath(thumbnailPath);
 
-//        return RestResult.Fail().message("test fail");
         RestResult<String> createResult = imageService.createImage(image);
         if (createResult.isSuccess()){
             return RestResult.Success().message("create successfully");
