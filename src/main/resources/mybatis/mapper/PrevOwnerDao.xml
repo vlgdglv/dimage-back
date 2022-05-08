@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bht.dimage.dao.PrevOwnerDao">
+    <select id="selectBySHA3" parameterType="java.lang.String" resultType="com.bht.dimage.entity.PrevOwner">
+        select * from `tb_prevOwner`
+        where #{sha3}=sha3
+    </select>
+    <update id="updatePrevOwner" parameterType="com.bht.dimage.entity.PrevOwner">
+        update `tb_prevOwner` set
+        distance=#{distance} where id = #{id}
+    </update>
+    <delete id="deletePrevOwner" parameterType="com.bht.dimage.entity.PrevOwner">
+        delete from `tb_prevOwner`
+        where id = #{id}
+    </delete>
+    <insert id="insertPrevOwner" parameterType="com.bht.dimage.entity.PrevOwner">
+        insert into `tb_prevOwner` ( sha3,address,distance )
+        values ( #{sha3},#{address},#{distance} )
+    </insert>
+    <select id="selectBySHA3andAddress" parameterType="java.lang.String" resultType="com.bht.dimage.entity.PrevOwner">
+        select * from `tb_prevOwner`
+        where #{sha3}=sha3 and #{address}=address
+    </select>
+</mapper>

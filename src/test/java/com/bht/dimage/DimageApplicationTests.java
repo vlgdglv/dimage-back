@@ -1,8 +1,11 @@
 package com.bht.dimage;
 
 import com.bht.dimage.common.RestResult;
+import com.bht.dimage.dao.ImageDao;
 import com.bht.dimage.dao.PurchaseDao;
+import com.bht.dimage.entity.Image;
 import com.bht.dimage.entity.PurchaseTransaction;
+import com.bht.dimage.service.ImageService;
 import com.bht.dimage.service.PurchaseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +22,8 @@ import java.util.List;
 @SpringBootTest
 class DimageApplicationTests {
 
+	@Resource
+	ImageDao imageDao;
 	@Test
 	void contextLoads() {
 	}
@@ -158,26 +163,53 @@ class DimageApplicationTests {
 	}
 
 	@Test
-	void batchinsert() {
+	void batchInsertPurchase() {
 		PurchaseTransaction ptx = new PurchaseTransaction();
 		long start = System.currentTimeMillis();
 		for (int i=0; i< 20;i++) {
-			ptx.setContractAddress("0xaaaaaaaaaaaaaaaa" + i);
-//			ptx.setContractAddress("0x1234567890" + i);
-			ptx.setPurchaser("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB");
-//			ptx.setPurchaser("pur"+ i);
-			ptx.setImageOwner("own" + i);
-//			ptx.setImageOwner("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB" );
+//			ptx.setContractAddress("0xaaaaaaaaaaaaaaaa" + i);
+			ptx.setContractAddress("0x1234567890" + i);
+//			ptx.setPurchaser("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB");
+			ptx.setPurchaser("pur"+ i);
+//			ptx.setImageOwner("own" + i);
+			ptx.setImageOwner("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB" );
+//			ptx.setImageID(i+20);
+			ptx.setImageID(i);
+			ptx.setOwnerShare("65000000000000000");
+			ptx.setAuthorShare("20000000000000000");
 			ptx.setImageAuthor("author"+ i);
 			ptx.setSha3("sha3"+i);
-			ptx.setImageID(i);
-			ptx.setOffer("8888888000000000");
+			ptx.setOffer("100000000000000000");
 			ptx.setLaunchTime(new Timestamp(System.currentTimeMillis()));
-			ptx.setEndTime(new Timestamp(System.currentTimeMillis()+1800000));
+			ptx.setEndTime(new Timestamp(System.currentTimeMillis()+18000000));
 			ptx.setDuration(36000);
 			ptx.setIsClosed(0);
 			ptx.setState(1);
+			ptx.setPrevOwnerShareRatio(-1);
 			purchaseDao.insertPurchase(ptx);
+		}
+		long cost = System.currentTimeMillis() - start;
+		System.out.println("Time used = "+ cost + "ms");
+	}
+
+	@Test
+	void batchInsertImage() {
+		Image image = new Image();
+		long start = System.currentTimeMillis();
+		for (int i=0; i< 20;i++) {
+			image.setImageID(i+20);
+//			image.setImageID(i);
+			image.setOwner("own" + i);
+//			image.setOwner("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB");
+			image.setAuthor	("author"+ i);
+			image.setSha3("sha3"+i);
+			image.setSignature("NM$L" + i);
+			image.setTxCount(0);
+			image.setTitle("Holy s");
+			image.setReleaseTime(new Timestamp(System.currentTimeMillis()));
+			image.setIpfsHash("IPFS HASH");
+			image.setThumbnailPath("Path");
+			imageDao.insertImage(image);
 		}
 		long cost = System.currentTimeMillis() - start;
 		System.out.println("Time used = "+ cost + "ms");

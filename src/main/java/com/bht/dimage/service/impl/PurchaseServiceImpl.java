@@ -7,6 +7,7 @@ import com.bht.dimage.dto.UpdatePurchaseDto;
 import com.bht.dimage.entity.Image;
 import com.bht.dimage.entity.PurchaseTransaction;
 import com.bht.dimage.service.AsyncService;
+import com.bht.dimage.service.PrevOwnerService;
 import com.bht.dimage.service.PurchaseService;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,12 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Resource
     PurchaseDao purchaseDao;
-
     @Resource
     ImageDao imageDao;
-
     @Resource
     AsyncService asyncService;
+    @Resource
+    PrevOwnerService prevOwnerService;
 
     @Override
     public RestResult createPurchase(PurchaseTransaction ptx) {
@@ -42,6 +43,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
         ptx.setIsClosed(0);
         ptx.setState(1);
+        ptx.setPrevOwnerShareRatio(-1);
         if (purchaseDao.insertPurchase(ptx) == 1) {
             return RestResult.Success().message("Purchase inserted");
         }else {
@@ -59,8 +61,8 @@ public class PurchaseServiceImpl implements PurchaseService {
         }else if (state == 0) {
             ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, 0);
             ptxList.addAll(purchaseDao.selectByImageOwner(owner, begin, pageCount, 2));
-            //TODO:update previous owner share ratio
-
+            //TODO:get previous owner share ratio
+            ptxList = prevOwnerService.calPrevOwnerShare(ptxList);
         }else {
             ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, state);
         }
@@ -89,7 +91,6 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public RestResult updateTx(UpdatePurchaseDto updatePurchaseDto) {
         List<PurchaseTransaction> pl = purchaseDao.selectByContractAddress(updatePurchaseDto.getContractAddress());
-
         if (pl.size() == 0) {
             return RestResult.Fail().message("Contract not found");
         }
@@ -98,8 +99,8 @@ public class PurchaseServiceImpl implements PurchaseService {
         int newState = updatePurchaseDto.getNewState();
         int oldStateOrigin = ptx.getState();
         int oldStateProvided = updatePurchaseDto.getOldState();
-        System.out.println(oldStateProvided);
-        System.out.println(oldStateOrigin);
+//        System.out.println(oldStateProvided);
+//        System.out.println(oldStateOrigin);
 
         if (oldStateProvided != oldStateOrigin) {
             return RestResult.Fail().message("Given state is incorrect");
@@ -111,19 +112,21 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (newState == -3) {
             ptx.setIsClosed(1);
         }
-
         if (oldStateOrigin==1) {
             if (newState == 2){
                 if (!from.equals(ptx.getImageOwner())) {
                     return RestResult.Fail().message("No permission 1-2");
                 }else {
-                    //TODO: update owner
                     Image image = imageDao.selectImageByID(ptx.getImageID()).get(0);
                     image.setOwner(ptx.getPurchaser());
+                    System.out.println(ptx.getImageID() + " Changing owner:" + ptx.getPurchaser());
                     image.setTxCount(image.getTxCount()+1);
                     if (imageDao.updateImage(image) != 1){
                         return RestResult.Fail().message("Databases error!");
                     }
+                    //TODO:update previous owner share ratio
+                    String sha3 = image.getSha3();
+                    prevOwnerService.addPrevOwner(sha3,ptx.getImageOwner());
                 }
             }
             if (newState == -1 && !from.equals(ptx.getImageOwner())) {

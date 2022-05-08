@@ -44,6 +44,10 @@ public class PurchaseController {
         if ( imageOwner == null || imageOwner.equals("")){ return RestResult.Fail().message("No image owner address!");}
         String imageAuthor = newPurchaseDto.getImageAuthor();
         if ( imageAuthor == null || imageAuthor.equals("")){ return RestResult.Fail().message("No image author address!");}
+        String authorShare = newPurchaseDto.getAuthorShare();
+        String ownerShare = newPurchaseDto.getOwnerShare();
+        if ( authorShare == null || authorShare.equals("")){  return RestResult.Fail().message("Invalid author share");}
+        if (  ownerShare == null ||  ownerShare.equals("")) { return RestResult.Fail().message("Invalid owner share"); }
         long imageID = newPurchaseDto.getImageID();
         if( imageID < 0) {  return RestResult.Fail().message("invalid image ID!");}
         String sha3 = newPurchaseDto.getSha3();
@@ -61,6 +65,8 @@ public class PurchaseController {
         ptx.setPurchaser(purchaser);
         ptx.setImageOwner(imageOwner);
         ptx.setImageAuthor(imageAuthor);
+        ptx.setAuthorShare(authorShare);
+        ptx.setOwnerShare(ownerShare);
         ptx.setImageID(imageID);
         ptx.setSha3(sha3);
         ptx.setOffer(offer);
@@ -93,12 +99,18 @@ public class PurchaseController {
         }else {
             int count, totPage;
             if (state != -3) {
-                count = purchaseDao.countByOwner(owner, state);
+                if (state == 0 || state ==2){
+                    count = purchaseDao.countByOwner(owner, 0);
+                    count +=purchaseDao.countByOwner(owner,2);
+                }else{
+                    count = purchaseDao.countByOwner(owner, state);
+                }
             }else {
                 count = purchaseDao.countExpiredByOwner(owner);
             }
+            System.out.println("state="+state+", count="+count);
             totPage = (int) Math.ceil((double) count / (double) pageCount);
-            System.out.println(totPage);
+//            System.out.println(totPage);
             PurchaseTransactionVo ptvo = new PurchaseTransactionVo();
             ptvo.setCurrentPage(currentPage);
             ptvo.setTotalPages(totPage);

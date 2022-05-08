@@ -5,7 +5,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bht.dimage.dao.ImageDao">
-
     <resultMap id="imageMapper" type="com.bht.dimage.entity.Image">
         <result property="imageID" column="image_id"/>
         <result property="author" column="author"/>
@@ -23,24 +22,24 @@
         insert into `tb_image` (
             image_id,author,owner,
             ipfs_hash,sha3,signature,
-            title,thumbnailPath,create_time)
+            title,thumbnail_path,create_time)
         values (
             #{imageID},#{author},#{owner},
             #{ipfsHash},#{sha3},#{signature},
             #{title},#{thumbnailPath},#{releaseTime})
     </insert>
-    <select id="selectImageBySHA3" parameterType="java.lang.String" resultType="com.bht.dimage.entity.Image">
+    <select id="selectImageBySHA3" parameterType="java.lang.String" resultMap="imageMapper">
         select * from `tb_image`
         where #{sha3}=sha3
     </select>
-    <select id="selectImageByID" parameterType="java.lang.Long" resultType="com.bht.dimage.entity.Image">
+    <select id="selectImageByID" parameterType="java.lang.Long" resultMap="imageMapper">
         select * from `tb_image`
         where #{imageID}=image_id
     </select>
-    <update id="updateImage" parameterType="com.bht.dimage.entity.Image">
+    <update id="updateImage" >
         update `tb_image` set
         owner=#{owner}, signature=#{signature}, tx_count=#{txCount}
-        where image_id = #{imageID}
+        where  #{imageID} = image_id
     </update>
 
 </mapper>

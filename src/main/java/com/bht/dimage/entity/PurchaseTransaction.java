@@ -16,8 +16,12 @@ public class PurchaseTransaction {
     private String purchaser;
     @ApiModelProperty(value = "拥有者", required = true)
     private String imageOwner;
+    @ApiModelProperty(value = "拥有者分红", required = true)
+    private String ownerShare;
     @ApiModelProperty(value = "作者", required = true)
     private String imageAuthor;
+    @ApiModelProperty(value = "作者分红", required = true)
+    private String authorShare;
     @ApiModelProperty(value = "图片ID", required = true)
     private long imageID;
     @ApiModelProperty(value = "图片sha3", required = true)
@@ -82,6 +86,22 @@ public class PurchaseTransaction {
     }
 
     public void setImageAuthor(String imageAuthor) { this.imageAuthor = imageAuthor; }
+
+    public String getOwnerShare() {
+        return ownerShare;
+    }
+
+    public void setOwnerShare(String ownerShare) {
+        this.ownerShare = ownerShare;
+    }
+
+    public String getAuthorShare() {
+        return authorShare;
+    }
+
+    public void setAuthorShare(String authorShare) {
+        this.authorShare = authorShare;
+    }
 
     public long getImageID() {
         return imageID;

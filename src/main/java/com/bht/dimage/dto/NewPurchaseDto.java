@@ -9,6 +9,10 @@ public class NewPurchaseDto {
     private String purchaser;
     private String imageOwner;
     private String imageAuthor;
+
+    private String ownerShare;
+
+    private String authorShare;
     private long imageID;
     private String sha3;
     private String offer;
@@ -45,6 +49,22 @@ public class NewPurchaseDto {
 
     public void setImageAuthor(String imageAuthor) {
         this.imageAuthor = imageAuthor;
+    }
+
+    public String getOwnerShare() {
+        return ownerShare;
+    }
+
+    public void setOwnerShare(String ownerShare) {
+        this.ownerShare = ownerShare;
+    }
+
+    public String getAuthorShare() {
+        return authorShare;
+    }
+
+    public void setAuthorShare(String authorShare) {
+        this.authorShare = authorShare;
     }
 
     public long getImageID() {
