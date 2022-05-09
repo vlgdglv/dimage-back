@@ -205,10 +205,11 @@ class DimageApplicationTests {
 			image.setSha3("sha3"+i);
 			image.setSignature("NM$L" + i);
 			image.setTxCount(0);
-			image.setTitle("Holy s");
+			image.setTitle("Holy s"+ System.currentTimeMillis());
 			image.setReleaseTime(new Timestamp(System.currentTimeMillis()));
 			image.setIpfsHash("IPFS HASH");
-			image.setThumbnailPath("Path");
+//			image.setThumbnailPath("D:\\Fun\\proj12\\Dimage-back\\pics\\testImage"+i+".png");
+			image.setThumbnailPath("D:\\Fun\\proj12\\Dimage-back\\pics\\testImage"+(i+20)+".png");
 			imageDao.insertImage(image);
 		}
 		long cost = System.currentTimeMillis() - start;

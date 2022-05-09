@@ -156,6 +156,19 @@ public class PurchaseController {
             return RestResult.Success().data(ptvo);
         }
     }
+    @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
+    @ResponseBody
+    @GetMapping(value = "/latestx")
+    public RestResult getLatestTx(@RequestParam int imageID) {
+        if (imageID < 0) {return RestResult.Fail().message("Invalid ID"); }
+        PurchaseTransaction ptx = purchaseDao.getLatestTx(imageID);
+        if (ptx == null) {
+            return RestResult.Fail().message("No result");
+        }else {
+            return RestResult.Success().data(ptx);
+        }
+    }
+
 
     @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
     @ResponseBody
@@ -170,4 +183,6 @@ public class PurchaseController {
         if( newState == oldState ) { return RestResult.Fail().message("No state change"); }
         return purchaseService.updateTx(updatePurchaseDto);
     }
+
+
 }

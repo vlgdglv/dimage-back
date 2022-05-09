@@ -19,4 +19,5 @@ public interface PurchaseDao {
     int countExpiredByPurchaser(String purchaser);
     int updateExpiredByOwner(String imageOwner);
     int updateExpiredByPurchaser(String purchaser);
+    PurchaseTransaction getLatestTx(int imageID);
 }

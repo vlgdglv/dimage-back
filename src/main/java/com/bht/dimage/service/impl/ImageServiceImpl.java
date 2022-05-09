@@ -51,4 +51,10 @@ public class ImageServiceImpl implements ImageService {
         Image image = imgList.get(0);
         return image.getThumbnailPath();
     }
+
+    @Override
+    public List<Image> getBatchImages(int currentPage, int pageCount, int order) {
+        int begin = (currentPage - 1 ) * pageCount;
+        return imageDao.selectImages(begin, pageCount, order);
+    }
 }

@@ -1,15 +1,18 @@
 package com.bht.dimage.controller;
 
 import com.bht.dimage.common.RestResult;
+import com.bht.dimage.dao.ImageDao;
 import com.bht.dimage.dto.NewImageDto;
 import com.bht.dimage.entity.Image;
 import com.bht.dimage.service.ImageService;
+import com.bht.dimage.vo.BatchImageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Api(tags = "图片接口")
 @RestController
@@ -17,6 +20,8 @@ public class ImageController {
 
     @Resource
     ImageService imageService;
+    @Resource
+    ImageDao imageDao;
 
     @ApiOperation(value = "发布新图片", notes = "发布新图片，保存图片信息")
     @ResponseBody
@@ -62,6 +67,37 @@ public class ImageController {
     public RestResult getImageBySHA(@RequestParam String sha3) {
         if ( sha3 == null || sha3.equals("")) { return RestResult.Fail().message("No sha3!"); }
         return imageService.selectImageBySHA(sha3);
+    }
+    @ApiOperation(value = "查找图片", notes = "根据，查找图片信息")
+    @ResponseBody
+    @GetMapping(value = "/getimagebyid")
+    public RestResult getImageByID(@RequestParam int id) {
+        if ( id < 0) { return RestResult.Fail().message("Invalid sid!"); }
+        Image image = imageDao.selectImageByID(id).get(0);
+        if (image == null) {
+            return RestResult.Fail().message("data base error!");
+        }else {
+            return RestResult.Success().data(image);
+        }
+    }
+
+    @ApiOperation(value = "", notes = "")
+    @ResponseBody
+    @GetMapping(value = "/getimages")
+    public RestResult getImages(@RequestParam(defaultValue = "1") int currentPage,
+                                @RequestParam(defaultValue = "16") int pageCount,
+                                @RequestParam(defaultValue = "0") int order) {
+        if (currentPage < 0 || pageCount < 0 ) {
+            return RestResult.Fail().message("Invalid page parameters");
+        }
+        List<Image> imageList = imageService.getBatchImages(currentPage, pageCount, order);
+        int count = imageDao.countImages();
+        int totalPage = (int) Math.ceil((double) count / (double)pageCount);
+        BatchImageVo bivo = new BatchImageVo();
+        bivo.setImageList(imageList);
+        bivo.setCurrentPage(currentPage);
+        bivo.setTotalPages(totalPage);
+        return RestResult.Success().data(bivo);
     }
 
 }

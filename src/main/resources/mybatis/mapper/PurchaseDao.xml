@@ -106,4 +106,9 @@
         update `tb_purchase` set isClosed=1
         where #{purchaser}=purchaser and end_time &lt; NOW()
     </update>
+    <select id="getLatestTx" resultMap="ptxMapper">
+        select * from `tb_purchase`
+        where #{imageID}=image_id and (state=0 or state=2)
+        ORDER BY launch_time DESC limit 1
+    </select>
 </mapper>

@@ -10,4 +10,6 @@ public interface ImageDao {
     List<Image> selectImageBySHA3(String sha3);
     List<Image> selectImageByID(long imageID);
     int updateImage(Image image);
+    int countImages();
+    List<Image> selectImages(int begin, int count, int order);
 }

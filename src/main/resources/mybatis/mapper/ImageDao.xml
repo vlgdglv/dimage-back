@@ -41,5 +41,14 @@
         owner=#{owner}, signature=#{signature}, tx_count=#{txCount}
         where  #{imageID} = image_id
     </update>
+    <select id="countImages" resultType="java.lang.Integer">
+        select count(*) from `tb_image`
+    </select>
+    <select id="selectImages" resultMap="imageMapper">
+        select * from `tb_image`
+        <if test="order == 0">ORDER BY create_time DESC</if>
+        <if test="order == 1">ORDER BY tx_count DESC</if>
+        limit #{begin}, #{count}
+    </select>
 
 </mapper>
