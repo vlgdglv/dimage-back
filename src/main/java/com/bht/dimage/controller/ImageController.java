@@ -68,7 +68,7 @@ public class ImageController {
         if ( sha3 == null || sha3.equals("")) { return RestResult.Fail().message("No sha3!"); }
         return imageService.selectImageBySHA(sha3);
     }
-    @ApiOperation(value = "查找图片", notes = "根据，查找图片信息")
+    @ApiOperation(value = "查找图片", notes = "根据ID，查找图片信息")
     @ResponseBody
     @GetMapping(value = "/getimagebyid")
     public RestResult getImageByID(@RequestParam int id) {
@@ -79,6 +79,44 @@ public class ImageController {
         }else {
             return RestResult.Success().data(image);
         }
+    }
+
+    @ApiOperation(value = "查找图片", notes = "根据作者，查找图片信息")
+    @ResponseBody
+    @GetMapping(value = "/getimagebyauthor")
+    public RestResult getImageByAuthor(@RequestParam String author,
+                                       @RequestParam(defaultValue = "1") int currentPage,
+                                       @RequestParam(defaultValue = "16") int pageCount,
+                                       @RequestParam(defaultValue = "0") int order) {
+        if ( author == null || author.equals("")) { return RestResult.Fail().message("Invalid author!"); }
+        int begin = (currentPage - 1 ) * pageCount;
+        List<Image> imageList = imageDao.selectImageByAuthor(author, begin, pageCount, order);
+        int count = imageDao.countByAuthor(author);
+        int totalPage = (int) Math.ceil((double) count / (double)pageCount);
+        BatchImageVo bivo = new BatchImageVo();
+        bivo.setImageList(imageList);
+        bivo.setCurrentPage(currentPage);
+        bivo.setTotalPages(totalPage);
+        return RestResult.Success().data(bivo);
+    }
+
+    @ApiOperation(value = "查找图片", notes = "根据作者，查找图片信息")
+    @ResponseBody
+    @GetMapping(value = "/getimagebyowner")
+    public RestResult getImageByOwner(@RequestParam String owner,
+                                       @RequestParam(defaultValue = "1") int currentPage,
+                                       @RequestParam(defaultValue = "16") int pageCount,
+                                       @RequestParam(defaultValue = "0") int order) {
+        if ( owner == null || owner.equals("")) { return RestResult.Fail().message("Invalid author!"); }
+        int begin = (currentPage - 1 ) * pageCount;
+        List<Image> imageList = imageDao.selectImageByOwner(owner, begin, pageCount, order);
+        int count = imageDao.countByOwner(owner);
+        int totalPage = (int) Math.ceil((double) count / (double)pageCount);
+        BatchImageVo bivo = new BatchImageVo();
+        bivo.setImageList(imageList);
+        bivo.setCurrentPage(currentPage);
+        bivo.setTotalPages(totalPage);
+        return RestResult.Success().data(bivo);
     }
 
     @ApiOperation(value = "", notes = "")

@@ -50,5 +50,24 @@
         <if test="order == 1">ORDER BY tx_count DESC</if>
         limit #{begin}, #{count}
     </select>
-
+    <select id="selectImageByAuthor" resultMap="imageMapper">
+        select * from `tb_image`
+        where #{author}=author
+        <if test="order == 0">ORDER BY create_time DESC</if>
+        <if test="order == 1">ORDER BY tx_count DESC</if>
+        limit #{begin}, #{count}
+    </select>
+    <select id="selectImageByOwner" resultMap="imageMapper">
+        select * from `tb_image`
+        where #{owner}=owner
+        <if test="order == 0">ORDER BY create_time DESC</if>
+        <if test="order == 1">ORDER BY tx_count DESC</if>
+        limit #{begin}, #{count}
+    </select>
+    <select id="countByAuthor" resultType="java.lang.Integer">
+        select count(*) from `tb_image` where #{author}=author
+    </select>
+    <select id="countByOwner" resultType="java.lang.Integer">
+        select count(*) from `tb_image` where #{owner}=owner
+    </select>
 </mapper>

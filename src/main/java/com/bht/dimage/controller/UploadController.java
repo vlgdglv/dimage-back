@@ -59,7 +59,6 @@ public class UploadController {
     public void  getThumbnail(@RequestParam("imageID") long imageID, HttpServletResponse response) {
         String path = imageService.getImageThumbnailPath(imageID);
         File file = new File(path);
-//        System.out.println(file.length());
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             response.setContentType("application/octet-stream");

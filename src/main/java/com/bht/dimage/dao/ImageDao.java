@@ -12,4 +12,8 @@ public interface ImageDao {
     int updateImage(Image image);
     int countImages();
     List<Image> selectImages(int begin, int count, int order);
+    List<Image> selectImageByAuthor(String author,int begin, int count, int order);
+    int countByAuthor(String author);
+    List<Image> selectImageByOwner(String owner,int begin, int count, int order);
+    int countByOwner(String owner);
 }
