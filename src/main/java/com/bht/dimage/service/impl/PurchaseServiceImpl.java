@@ -9,6 +9,7 @@ import com.bht.dimage.entity.PurchaseTransaction;
 import com.bht.dimage.service.AsyncService;
 import com.bht.dimage.service.PrevOwnerService;
 import com.bht.dimage.service.PurchaseService;
+import com.bht.dimage.vo.TxImageVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,6 +18,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
@@ -58,7 +60,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         List<PurchaseTransaction> ptxList;
         if (state == -3) {
             ptxList = purchaseDao.selectExpiredByOwner(owner,begin, pageCount);
-        }else if (state == 0) {
+        }else if (state == 0 ) {
             ptxList = purchaseDao.selectByImageOwner(owner, begin, pageCount, 0);
             ptxList.addAll(purchaseDao.selectByImageOwner(owner, begin, pageCount, 2));
             //TODO:get previous owner share ratio
@@ -74,14 +76,12 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount, int state) {
-        purchaseDao.updateExpiredByPurchaser(purchaser);
+//        purchaseDao.updateExpiredByPurchaser(purchaser);
         int begin = (currentPage - 1 ) * pageCount;
         List<PurchaseTransaction> ptxList ;
-        if (state == -3) {
-            ptxList = purchaseDao.selectExpiredByPurchaser(purchaser, begin, pageCount);
-        }else {
-            ptxList = purchaseDao.selectByPurchaser(purchaser, begin, pageCount, state);
-        }
+
+        ptxList = purchaseDao.selectByPurchaser(purchaser, begin, pageCount, state);
+
         if (ptxList == null) {
             return null;
         }
@@ -112,9 +112,10 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (newState == -3) {
             ptx.setIsClosed(1);
         }
+        //Change owner
         if (oldStateOrigin==1) {
             if (newState == 2){
-                if (!from.equals(ptx.getImageOwner())) {
+                if (!from.equalsIgnoreCase(ptx.getImageOwner())) {
                     return RestResult.Fail().message("No permission 1-2");
                 }else {
                     Image image = imageDao.selectImageByID(ptx.getImageID()).get(0);
@@ -124,9 +125,9 @@ public class PurchaseServiceImpl implements PurchaseService {
                     if (imageDao.updateImage(image) != 1){
                         return RestResult.Fail().message("Databases error!");
                     }
-                    //TODO:update previous owner share ratio
                     String sha3 = image.getSha3();
                     prevOwnerService.addPrevOwner(sha3,ptx.getImageOwner());
+                    //TODO:decline other
                 }
             }
             if (newState == -1 && !from.equals(ptx.getImageOwner())) {
@@ -137,7 +138,9 @@ public class PurchaseServiceImpl implements PurchaseService {
             }
         }
         if (oldStateOrigin==2 && newState==0){
-            if (!from.equals(ptx.getPurchaser())){
+            System.out.println("From:" + from);
+            System.out.println("Purc:" + ptx.getPurchaser());
+            if (!from.equalsIgnoreCase(ptx.getPurchaser())){
                 return RestResult.Fail().message("No permission 2-0");
             }else {
                 String sign = updatePurchaseDto.getSignature();
@@ -157,4 +160,22 @@ public class PurchaseServiceImpl implements PurchaseService {
             return RestResult.Fail().message("Databases error!");
         }
     }
+
+    @Override
+    public RestResult fetchTxByID(long txID) {
+        PurchaseTransaction ptx = purchaseDao.selectTxByID(txID);
+        if (ptx == null) {
+            return RestResult.Fail().message("No such transaction");
+        }
+        Image image = imageDao.selectImageByID(ptx.getImageID()).get(0);
+        if (image == null) {
+            return RestResult.Fail().message("No image");
+        }
+        TxImageVO tivo = new TxImageVO();
+        tivo.setImage(image);
+        tivo.setPtx(ptx);
+        return RestResult.Success().data(tivo);
+    }
+
+
 }

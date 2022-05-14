@@ -6,6 +6,7 @@ import com.bht.dimage.dao.PurchaseDao;
 import com.bht.dimage.dto.NewPurchaseDto;
 import com.bht.dimage.dto.UpdatePurchaseDto;
 import com.bht.dimage.entity.PurchaseTransaction;
+import com.bht.dimage.service.PrevOwnerService;
 import com.bht.dimage.service.PurchaseService;
 import com.bht.dimage.vo.PurchaseTransactionVo;
 import io.swagger.annotations.Api;
@@ -26,6 +27,9 @@ public class PurchaseController {
 
     @Resource
     PurchaseService purchaseService;
+
+    @Resource
+    PrevOwnerService prevOwnerService;
 
     @Resource
     PurchaseDao purchaseDao;
@@ -61,14 +65,14 @@ public class PurchaseController {
 
         long endTime = launchTime + duration;
 
-        ptx.setContractAddress(contractAddress);
-        ptx.setPurchaser(purchaser);
-        ptx.setImageOwner(imageOwner);
-        ptx.setImageAuthor(imageAuthor);
+        ptx.setContractAddress(contractAddress.toLowerCase());
+        ptx.setPurchaser(purchaser.toLowerCase());
+        ptx.setImageOwner(imageOwner.toLowerCase());
+        ptx.setImageAuthor(imageAuthor.toLowerCase());
         ptx.setAuthorShare(authorShare);
         ptx.setOwnerShare(ownerShare);
         ptx.setImageID(imageID);
-        ptx.setSha3(sha3);
+        ptx.setSha3(sha3.toLowerCase());
         ptx.setOffer(offer);
         ptx.setLaunchTime(new Timestamp(launchTime*1000));
         ptx.setEndTime(new Timestamp(endTime*1000));
@@ -79,7 +83,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
     @ResponseBody
-    @GetMapping(value = "/getownertx")
+    @GetMapping(value = "/ownertx")
     public RestResult getTxByOwner(@RequestParam String owner,
                                    @RequestParam(defaultValue = "1") int currentPage,
                                    @RequestParam(defaultValue = "5") int pageCount,
@@ -90,7 +94,7 @@ public class PurchaseController {
         if (pageCount < 0 || currentPage < 0) {
             return RestResult.Fail().message("Invalid page");
         }
-        if (state < -3 || state > 2) {
+        if (state < -3 || state > 3) {
             return RestResult.Fail().message("Invalid state!");
         }
         List<PurchaseTransaction> ptxList= purchaseService.fetchTxByOwner(owner, currentPage, pageCount,state);
@@ -122,7 +126,7 @@ public class PurchaseController {
 
     @ApiOperation(value = "获取交易详情", notes = "根据购买者获取交易")
     @ResponseBody
-    @GetMapping(value = "/getpurchasertx")
+    @GetMapping(value = "/purchasertx")
     public RestResult getTxByPurchaser(@RequestParam String purchaser,
                                        @RequestParam(defaultValue = "1") int currentPage,
                                        @RequestParam(defaultValue = "5") int pageCount,
@@ -133,7 +137,7 @@ public class PurchaseController {
         if (pageCount < 0 || currentPage < 0) {
             return RestResult.Fail().message("Invalid page");
         }
-        if (state < -3 || state > 2) {
+        if (state < -3 || state > 3) {
             return RestResult.Fail().message("Invalid state!");
         }
         List<PurchaseTransaction> ptxList= purchaseService.fetchTxByPurchaser(purchaser, currentPage, pageCount,state);
@@ -159,7 +163,7 @@ public class PurchaseController {
     @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
     @ResponseBody
     @GetMapping(value = "/latestx")
-    public RestResult getLatestTx(@RequestParam int imageID) {
+    public RestResult getLatestTx(@RequestParam long imageID) {
         if (imageID < 0) {return RestResult.Fail().message("Invalid ID"); }
         PurchaseTransaction ptx = purchaseDao.getLatestTx(imageID);
         if (ptx == null) {
@@ -168,6 +172,8 @@ public class PurchaseController {
             return RestResult.Success().data(ptx);
         }
     }
+
+
 
 
     @ApiOperation(value = "获取交易详情", notes = "根据拥有者获取交易")
@@ -184,5 +190,21 @@ public class PurchaseController {
         return purchaseService.updateTx(updatePurchaseDto);
     }
 
+    @ApiOperation(value = "获取前拥有者", notes = "根据SHA3获取前拥有者，最多五个")
+    @ResponseBody
+    @GetMapping(value = "/prevowner")
+    public RestResult getPrevOwner(@RequestParam String sha3) {
+        if (sha3 == null || sha3.equals("")) { return RestResult.Fail().message("No sha3"); }
+        return prevOwnerService.getPrevOwner(sha3);
+    }
+
+    @ApiOperation(value = "获取前拥有者", notes = "根据SHA3获取前拥有者，最多五个")
+    @ResponseBody
+    @GetMapping(value = "/txbyid")
+    public RestResult getTxByID(@RequestParam long txID) {
+        System.out.println("txID" + txID);
+        if (txID < 0) { return RestResult.Fail().message("Invalid sha3"); }
+        return purchaseService.fetchTxByID(txID);
+    }
 
 }

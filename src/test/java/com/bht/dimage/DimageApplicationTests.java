@@ -167,14 +167,14 @@ class DimageApplicationTests {
 		PurchaseTransaction ptx = new PurchaseTransaction();
 		long start = System.currentTimeMillis();
 		for (int i=0; i< 20;i++) {
-//			ptx.setContractAddress("0xaaaaaaaaaaaaaaaa" + i);
-			ptx.setContractAddress("0x1234567890" + i);
-//			ptx.setPurchaser("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB");
-			ptx.setPurchaser("pur"+ i);
-//			ptx.setImageOwner("own" + i);
-			ptx.setImageOwner("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB" );
-//			ptx.setImageID(i+20);
-			ptx.setImageID(i);
+			ptx.setContractAddress("0xaaaaaaaaaaaaaaaa" + i);
+//			ptx.setContractAddress("0x1234567890" + i);
+			ptx.setPurchaser("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB");
+//			ptx.setPurchaser("pur"+ i);
+			ptx.setImageOwner("own" + i);
+//			ptx.setImageOwner("0x9aEB35aa6EE18cDe040E3903B6aec935619D75cB" );
+			ptx.setImageID(i+20);
+//			ptx.setImageID(i);
 			ptx.setOwnerShare("65000000000000000");
 			ptx.setAuthorShare("20000000000000000");
 			ptx.setImageAuthor("author"+ i);

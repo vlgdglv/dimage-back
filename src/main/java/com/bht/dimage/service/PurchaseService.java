@@ -11,4 +11,5 @@ public interface PurchaseService {
     List<PurchaseTransaction> fetchTxByOwner(String owner, int currentPage, int pageCount, int state);
     List<PurchaseTransaction> fetchTxByPurchaser(String purchaser, int currentPage, int pageCount, int state);
     RestResult updateTx(UpdatePurchaseDto updatePurchaseDto);
+    RestResult fetchTxByID(long txID);
 }

@@ -55,9 +55,11 @@ public class UploadController {
     }
 
     @ApiOperation(value = "获取缩略图", notes = "根据路径获取缩略图")
-    @PostMapping(value = "/thumbnail")
+    @PostMapping(value = "/thumbnailbyid")
     public void  getThumbnail(@RequestParam("imageID") long imageID, HttpServletResponse response) {
         String path = imageService.getImageThumbnailPath(imageID);
+
+        System.out.println(path);
         File file = new File(path);
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
@@ -78,7 +80,7 @@ public class UploadController {
     }
 
     @ApiOperation(value = "获取缩略图", notes = "根据路径获取缩略图")
-    @PostMapping(value = "/thumbnailTest")
+    @PostMapping(value = "/thumbnail")
     public void  getThumbnailTest(@RequestParam("path") String path, HttpServletResponse response) {
 //        System.out.println("Dir path:" + path);
         File file = new File(path);

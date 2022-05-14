@@ -7,7 +7,7 @@
 <mapper namespace="com.bht.dimage.dao.PrevOwnerDao">
     <select id="selectBySHA3" parameterType="java.lang.String" resultType="com.bht.dimage.entity.PrevOwner">
         select * from `tb_prevOwner`
-        where #{sha3}=sha3
+        where #{sha3}=sha3 ORDER BY distance DESC
     </select>
     <update id="updatePrevOwner" parameterType="com.bht.dimage.entity.PrevOwner">
         update `tb_prevOwner` set
