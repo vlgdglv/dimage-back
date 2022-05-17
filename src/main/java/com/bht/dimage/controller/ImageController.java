@@ -33,8 +33,6 @@ public class ImageController {
         if ( imageID < 0) { return RestResult.Fail().message("Invalid id!"); }
         String author = newImageDto.getAuthor();
         if ( author == null || author.equals("")) { return RestResult.Fail().message("No author!"); }
-        String ipfsHash = newImageDto.getHash();
-        if ( ipfsHash == null || ipfsHash.equals("")) { return RestResult.Fail().message("No ipfs hash!"); }
         String sha3 = newImageDto.getSha3();
         if ( sha3 == null || sha3.equals("")) { return RestResult.Fail().message("No sha3!"); }
         String signature = newImageDto.getSignature();
@@ -45,11 +43,10 @@ public class ImageController {
         if ( thumbnailPath == null || thumbnailPath.equals("")) { return RestResult.Fail().message("No thumbnail path!"); }
         //pack up image entity
         image.setImageID(imageID);
-        image.setAuthor(author);
-        image.setOwner(author);
-        image.setIpfsHash(ipfsHash);
-        image.setSha3(sha3);
-        image.setSignature(signature);
+        image.setAuthor(author.toLowerCase());
+        image.setOwner(author.toLowerCase());
+        image.setSha3(sha3.toLowerCase());
+        image.setSignature(signature.toLowerCase());
         image.setTitle(title);
         image.setThumbnailPath(thumbnailPath);
 

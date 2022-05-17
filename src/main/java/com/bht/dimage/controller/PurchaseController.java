@@ -198,7 +198,7 @@ public class PurchaseController {
         return prevOwnerService.getPrevOwner(sha3);
     }
 
-    @ApiOperation(value = "获取前拥有者", notes = "根据SHA3获取前拥有者，最多五个")
+    @ApiOperation(value = "获得tx", notes = "根据id获得tx")
     @ResponseBody
     @GetMapping(value = "/txbyid")
     public RestResult getTxByID(@RequestParam long txID) {

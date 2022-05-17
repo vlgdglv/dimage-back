@@ -9,7 +9,7 @@
         <result property="imageID" column="image_id"/>
         <result property="author" column="author"/>
         <result property="owner" column="owner"/>
-        <result property="ipfsHash" column="ipfs_hash"/>
+<!--        <result property="ipfsHash" column="ipfs_hash"/>-->
         <result property="sha3" column="sha3"/>
         <result property="signature" column="signature"/>
         <result property="thumbnailPath" column="thumbnail_path"/>
@@ -21,11 +21,11 @@
     <insert id="insertImage" parameterType="com.bht.dimage.entity.Image">
         insert into `tb_image` (
             image_id,author,owner,
-            ipfs_hash,sha3,signature,
+            sha3,signature,
             title,thumbnail_path,create_time)
         values (
             #{imageID},#{author},#{owner},
-            #{ipfsHash},#{sha3},#{signature},
+            #{sha3},#{signature},
             #{title},#{thumbnailPath},#{releaseTime})
     </insert>
     <select id="selectImageBySHA3" parameterType="java.lang.String" resultMap="imageMapper">

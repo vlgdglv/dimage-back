@@ -130,10 +130,10 @@ public class PurchaseServiceImpl implements PurchaseService {
                     //TODO:decline other
                 }
             }
-            if (newState == -1 && !from.equals(ptx.getImageOwner())) {
+            if (newState == -1 && !from.equalsIgnoreCase(ptx.getImageOwner())) {
                 return RestResult.Fail().message("No permission 1--1");
             }
-            if (newState == -2 && !from.equals(ptx.getPurchaser())) {
+            if (newState == -2 && !from.equalsIgnoreCase(ptx.getPurchaser())) {
                 return RestResult.Fail().message("No permission 1--2");
             }
         }

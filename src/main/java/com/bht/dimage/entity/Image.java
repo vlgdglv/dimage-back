@@ -13,8 +13,8 @@ public class Image {
     private String author;
     @ApiModelProperty(value = "所有者", required = true)
     private String owner;
-    @ApiModelProperty(value = "IPFS地址", required = true)
-    private String ipfsHash;
+//    @ApiModelProperty(value = "IPFS地址", required = true)
+//    private String ipfsHash;
     @ApiModelProperty(value = "图片SHA3(keccak256)", required = true)
     private String sha3;
     @ApiModelProperty(value = "数字签名", required = true)
@@ -46,14 +46,6 @@ public class Image {
     public String getOwner() { return owner; }
 
     public void setOwner(String owner) { this.owner = owner; }
-
-    public String getIpfsHash() {
-        return ipfsHash;
-    }
-
-    public void setIpfsHash(String ipfsHash) {
-        this.ipfsHash = ipfsHash;
-    }
 
     public String getSha3() { return sha3; }
 

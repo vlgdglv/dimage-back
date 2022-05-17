@@ -3,7 +3,6 @@ package com.bht.dimage.dto;
 public class NewImageDto {
     private long imgID;
     private String author;
-    private String hash;
     private String sha3;
     private String signature;
     private String title;
@@ -23,14 +22,6 @@ public class NewImageDto {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 
     public String getSha3() {

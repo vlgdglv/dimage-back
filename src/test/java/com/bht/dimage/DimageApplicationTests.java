@@ -207,7 +207,6 @@ class DimageApplicationTests {
 			image.setTxCount(0);
 			image.setTitle("Holy s"+ System.currentTimeMillis());
 			image.setReleaseTime(new Timestamp(System.currentTimeMillis()));
-			image.setIpfsHash("IPFS HASH");
 //			image.setThumbnailPath("D:\\Fun\\proj12\\Dimage-back\\pics\\testImage"+i+".png");
 			image.setThumbnailPath("D:\\Fun\\proj12\\Dimage-back\\pics\\testImage"+(i+20)+".png");
 			imageDao.insertImage(image);

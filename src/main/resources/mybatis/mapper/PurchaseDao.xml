@@ -54,7 +54,7 @@
         where #{purchaser}=purchaser
         <if test="state != 3"> and state=#{state} </if>
         <if test="state == 1 or state == 2"> and isClosed = 0</if>
-        ORDER BY end_time
+        ORDER BY end_time DESC
         limit #{begin}, #{count}
     </select>
     <update id="updateByTxID"  parameterType="com.bht.dimage.entity.PurchaseTransaction">
@@ -69,13 +69,13 @@
     <select id="countByPurchaser" resultType="java.lang.Integer">
         select count(*) from `tb_purchase`
         where #{purchaser}=purchaser
-            <if test="state != null"> and state=#{state} </if>
+            <if test="state != 3"> and state=#{state} </if>
             <if test="state == 1"> and isClosed = 0</if>
     </select>
     <select id="countByOwner" resultType="java.lang.Integer">
         select count(*) from `tb_purchase`
         where #{owner}=image_owner
-            <if test="state != null"> and state=#{state} </if>
+            <if test="state != 3"> and state=#{state} </if>
             <if test="state == 1"> and isClosed = 0</if>
     </select>
     <select id="selectExpiredByOwner" resultMap="ptxMapper">
