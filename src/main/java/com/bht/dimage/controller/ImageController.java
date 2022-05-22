@@ -17,7 +17,6 @@ import java.util.List;
 @Api(tags = "图片接口")
 @RestController
 public class ImageController {
-
     @Resource
     ImageService imageService;
     @Resource

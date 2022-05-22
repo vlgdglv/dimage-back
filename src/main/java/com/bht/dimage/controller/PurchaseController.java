@@ -112,9 +112,7 @@ public class PurchaseController {
             }else {
                 count = purchaseDao.countExpiredByOwner(owner);
             }
-            System.out.println("state="+state+", count="+count);
             totPage = (int) Math.ceil((double) count / (double) pageCount);
-//            System.out.println(totPage);
             PurchaseTransactionVo ptvo = new PurchaseTransactionVo();
             ptvo.setCurrentPage(currentPage);
             ptvo.setTotalPages(totPage);
@@ -151,7 +149,6 @@ public class PurchaseController {
                 count = purchaseDao.countByPurchaser(purchaser, state);
             }
             totPage = (int)Math.ceil( (double)count / (double)pageCount );
-            System.out.println(count);
             PurchaseTransactionVo ptvo = new PurchaseTransactionVo();
             ptvo.setCurrentPage(currentPage);
             ptvo.setTotalPages(totPage);
@@ -202,7 +199,6 @@ public class PurchaseController {
     @ResponseBody
     @GetMapping(value = "/txbyid")
     public RestResult getTxByID(@RequestParam long txID) {
-        System.out.println("txID" + txID);
         if (txID < 0) { return RestResult.Fail().message("Invalid sha3"); }
         return purchaseService.fetchTxByID(txID);
     }

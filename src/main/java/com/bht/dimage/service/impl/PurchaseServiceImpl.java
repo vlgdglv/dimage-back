@@ -99,9 +99,6 @@ public class PurchaseServiceImpl implements PurchaseService {
         int newState = updatePurchaseDto.getNewState();
         int oldStateOrigin = ptx.getState();
         int oldStateProvided = updatePurchaseDto.getOldState();
-//        System.out.println(oldStateProvided);
-//        System.out.println(oldStateOrigin);
-
         if (oldStateProvided != oldStateOrigin) {
             return RestResult.Fail().message("Given state is incorrect");
         }
@@ -120,7 +117,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                 }else {
                     Image image = imageDao.selectImageByID(ptx.getImageID()).get(0);
                     image.setOwner(ptx.getPurchaser());
-                    System.out.println(ptx.getImageID() + " Changing owner:" + ptx.getPurchaser());
+//                    System.out.println(ptx.getImageID() + " Changing owner:" + ptx.getPurchaser());
                     image.setTxCount(image.getTxCount()+1);
                     if (imageDao.updateImage(image) != 1){
                         return RestResult.Fail().message("Databases error!");
@@ -138,8 +135,6 @@ public class PurchaseServiceImpl implements PurchaseService {
             }
         }
         if (oldStateOrigin==2 && newState==0){
-            System.out.println("From:" + from);
-            System.out.println("Purc:" + ptx.getPurchaser());
             if (!from.equalsIgnoreCase(ptx.getPurchaser())){
                 return RestResult.Fail().message("No permission 2-0");
             }else {
@@ -176,6 +171,5 @@ public class PurchaseServiceImpl implements PurchaseService {
         tivo.setPtx(ptx);
         return RestResult.Success().data(tivo);
     }
-
 
 }

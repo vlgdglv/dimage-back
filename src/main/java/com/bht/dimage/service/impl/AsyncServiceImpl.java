@@ -23,7 +23,6 @@ public class AsyncServiceImpl implements AsyncService {
         for(PurchaseTransaction ptx: ptxList) {
             successCount += purchaseDao.updateByTxID(ptx);
         }
-        System.out.println(successCount + " rows were updated");
         return successCount;
     }
 }

@@ -31,7 +31,6 @@ public class UploadController {
     public RestResult<String> upload(HttpServletRequest httpServletRequest,
                                      @RequestParam("file") MultipartFile multipartFile,
                                      @RequestParam("sha3") String sha3) {
-//        System.out.println(multipartFile.getOriginalFilename());
         String fileName = multipartFile.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf('.'));
         StringBuilder tempName = new StringBuilder();
@@ -41,7 +40,6 @@ public class UploadController {
         File destFile;
         try {
             String dirPath = FileUtil.getFilePath();
-            System.out.println("Dir path:" + dirPath);
             String fullPath = dirPath + newFileName;
             destFile = new File(fullPath);
             multipartFile.transferTo(destFile);
@@ -58,13 +56,10 @@ public class UploadController {
     @PostMapping(value = "/thumbnailbyid")
     public void  getThumbnail(@RequestParam("imageID") long imageID, HttpServletResponse response) {
         String path = imageService.getImageThumbnailPath(imageID);
-
-        System.out.println(path);
         File file = new File(path);
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             response.setContentType("application/octet-stream");
-
             ServletOutputStream outputStream = response.getOutputStream();
             byte[] buffer = new byte[1024];
             int index = 0;
@@ -82,15 +77,10 @@ public class UploadController {
     @ApiOperation(value = "获取缩略图", notes = "根据路径获取缩略图")
     @PostMapping(value = "/thumbnail")
     public void  getThumbnailTest(@RequestParam("path") String path, HttpServletResponse response) {
-//        System.out.println("Dir path:" + path);
         File file = new File(path);
-
-//        System.out.println(file.length());
-//        String name = path.substring(path.lastIndexOf(File.pathSeparator));
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             response.setContentType("application/octet-stream");
-
             ServletOutputStream outputStream = response.getOutputStream();
             byte[] buffer = new byte[1024];
             int index = 0;
